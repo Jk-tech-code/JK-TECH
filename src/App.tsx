@@ -768,6 +768,74 @@ const WhatsAppButton = () => {
   );
 };
 
+const CyberPortals = () => {
+  const portalServices = [
+    {
+      title: "KRA Tax Services",
+      desc: "Stay compliant and avoid penalties with our expert tax assistance.",
+      items: [
+        "Annual Income Tax Returns",
+        "KRA PIN Registration",
+        "Tax Compliance Certificates (TCC)",
+        "VAT & Monthly Rental Income filing"
+      ],
+      icon: <CheckCircle2 className="text-primary" size={32} />
+    },
+    {
+      title: "e-Citizen Services",
+      desc: "Fast-track your government applications through the official portal.",
+      items: [
+        "Business Name Registration",
+        "Certificate of Good Conduct",
+        "NTSA / TIMS (Driving Licenses)",
+        "Passport & Visa Applications"
+      ],
+      icon: <CheckCircle2 className="text-primary" size={32} />
+    }
+  ];
+
+  return (
+    <section id="cyber-services" className="py-24 bg-white border-none">
+      <div className="container mx-auto px-4 md:px-6 border-none">
+        <div className="grid lg:grid-cols-2 gap-16 items-center border-none">
+          <div className="border-none font-bold">
+            <h2 className="text-primary font-bold text-lg mb-4 h-auto border-none">Cyber & Portal Services</h2>
+            <h3 className="text-4xl md:text-5xl font-bold mb-8 text-slate-900 border-none">Simplifying Government Services for You</h3>
+            <p className="text-lg text-slate-600 mb-10 leading-relaxed border-none">
+              Navigating government portals can be stressful. We provide a specialized "Cyber" desk to help individuals and business owners in Kenya handle their digital applications quickly and correctly.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-6 border-none">
+              {portalServices.map((portal) => (
+                <div key={portal.title} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 border-none">
+                  <div className="mb-4 h-auto border-none">{portal.icon}</div>
+                  <h4 className="text-xl font-bold text-slate-900 mb-2 border-none">{portal.title}</h4>
+                  <p className="text-sm text-slate-500 mb-4 border-none">{portal.desc}</p>
+                  <ul className="space-y-2 border-none">
+                    {portal.items.map((item) => (
+                      <li key={item} className="flex items-center gap-2 text-sm text-slate-700 border-none">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full border-none" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="relative group border-none">
+            <div className="absolute inset-0 bg-primary/10 rounded-[40px] rotate-3 group-hover:rotate-0 transition-transform h-auto border-none" />
+            <img 
+              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2670&auto=format&fit=crop" 
+              alt="Cyber Services" 
+              className="relative rounded-[40px] shadow-xl h-auto"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export default function App() {
   return (
     <div className="selection:bg-primary selection:text-white border-none bg-white">
@@ -776,6 +844,7 @@ export default function App() {
         <Hero />
         <About />
         <Services />
+        <CyberPortals />
         <WhyChooseUs />
         <HowItWorks />
         <Pricing />
