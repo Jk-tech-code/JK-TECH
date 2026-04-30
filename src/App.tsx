@@ -256,37 +256,37 @@ const Services = () => {
   const services = [
     {
       title: "Website Design",
-      desc: "Professional, mobile-friendly websites that look great and convert visitors into customers.",
+      desc: "Turn your business into a 24/7 sales machine with a professional website that builds trust and makes it easy for customers to find and pay you.",
       icon: <Globe className="text-primary" size={40} />,
       link: "#"
     },
     {
       title: "Cyber & Online Services",
-      desc: "Help with KRA, e-Citizen, NTSA/TIMS, HEB, and other government portal applications.",
+      desc: "Skip the queues and avoid heavy penalties. We handle your KRA, e-Citizen, and NTSA applications correctly, saving you time and stress.",
       icon: <CheckCircle2 className="text-primary" size={40} />,
       link: "#"
     },
     {
       title: "Social Media Marketing",
-      desc: "Engaging and consistent content strategy for Facebook and Instagram to grow your local following.",
+      desc: "Stop shouting into the void. We build a loyal community for your brand on Facebook and Instagram that actually converts followers into repeat customers.",
       icon: <Share2 className="text-primary" size={40} />,
       link: "#"
     },
     {
       title: "Online Advertising",
-      desc: "Smartly targeted ads on Google and Meta platforms to reach people looking for your services.",
+      desc: "Get your business in front of people who are ready to buy right now. Our targeted ads ensure every shilling you spend brings in real leads.",
       icon: <Megaphone className="text-primary" size={40} />,
       link: "#"
     },
     {
       title: "Branding & Design",
-      desc: "Creative logos, posters, and brand identities that make your business stand out in the crowd.",
+      desc: "Don't just be another shop. Get a professional identity that makes you the first choice in your neighborhood and leaves a lasting impression.",
       icon: <Palette className="text-primary" size={40} />,
       link: "#"
     },
     {
       title: "IT Support",
-      desc: "Reliable technical support, system setups, and troubleshooting to keep your business running.",
+      desc: "Keep your business running smoothly without tech headaches. Our reliable support ensures your systems are secure, fast, and always online.",
       icon: <Monitor className="text-primary" size={40} />,
       link: "#"
     }
@@ -566,6 +566,66 @@ const Testimonials = () => {
 };
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    business: '',
+    service: 'Website Design',
+    message: ''
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
+    }
+    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    return newErrors;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    setErrors({});
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setFormData({ 
+        name: '', 
+        email: '', 
+        business: '', 
+        service: 'Website Design', 
+        message: '' 
+      });
+    }, 1500);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
   return (
     <section id="contact" className="py-24 bg-slate-900 text-white border-none overflow-hidden relative">
       <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 -z-0 blur-[100px] rounded-full border-none" />
@@ -618,39 +678,119 @@ const Contact = () => {
             </div>
           </div>
           
-          <div className="bg-white p-10 rounded-[32px] text-slate-900 shadow-2xl border-none">
-            <form className="space-y-6 border-none font-bold">
-              <div className="grid md:grid-cols-2 gap-6 border-none">
-                <div className="border-none">
-                  <label className="block text-sm font-bold text-slate-700 mb-2 border-none font-bold">Your Name</label>
-                  <input type="text" className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary h-auto" placeholder="John Doe" />
-                </div>
-                <div className="border-none">
-                  <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Your Email Address</label>
-                  <input type="email" className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary h-auto" placeholder="john@example.com" />
-                </div>
-              </div>
-              <div className="border-none">
-                <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Business Name</label>
-                <input type="text" className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary h-auto" placeholder="My Enterprise" />
-              </div>
-              <div className="border-none">
-                <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Service Needed</label>
-                <select className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary h-auto font-bold appearance-none">
-                  <option>Website Design</option>
-                  <option>Social Media Marketing</option>
-                  <option>Branding</option>
-                  <option>IT Support</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div className="border-none">
-                <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Message</label>
-                <textarea rows={4} className="w-full px-5 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-primary h-auto" placeholder="Tell us more about your project..."></textarea>
-              </div>
-              <p className="text-xs text-slate-500 italic mb-4">⚡ We usually respond within a few hours during working time.</p>
-              <button className="w-full bg-primary text-white py-5 rounded-xl font-bold text-lg hover:bg-primary-dark transition-all border-none">👉 Send Message</button>
-            </form>
+          <div className="bg-white p-10 rounded-[32px] text-slate-900 shadow-2xl border-none relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              {isSubmitted ? (
+                <motion.div 
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                  className="text-center py-12 h-full flex flex-col justify-center items-center font-bold"
+                >
+                  <div className="w-24 h-24 bg-green-100 text-primary rounded-full flex items-center justify-center mb-8 border-none">
+                    <CheckCircle2 size={48} />
+                  </div>
+                  <h4 className="text-3xl font-bold mb-4 border-none">Message Sent!</h4>
+                  <p className="text-slate-600 text-lg mb-8 max-w-sm border-none font-bold">
+                    Thank you for reaching out to JK Tech Cyber. We've received your inquiry and will get back to you within a few hours.
+                  </p>
+                  <button 
+                    onClick={() => setIsSubmitted(false)}
+                    className="bg-primary text-white px-10 py-4 rounded-xl font-bold hover:bg-primary-dark transition-all border-none"
+                  >
+                    Send Another Message
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form 
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleSubmit} 
+                  className="space-y-6 border-none font-bold"
+                >
+                  <div className="grid md:grid-cols-2 gap-6 border-none">
+                    <div className="border-none">
+                      <label className="block text-sm font-bold text-slate-700 mb-2 border-none font-bold">Your Name</label>
+                      <input 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        type="text" 
+                        className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none transition-all ${errors.name ? 'border-red-500 focus:ring-red-200' : 'border-transparent'}`} 
+                        placeholder="John Doe" 
+                      />
+                      {errors.name && <p className="text-red-500 text-[10px] mt-1 font-bold italic tracking-wide">{errors.name}</p>}
+                    </div>
+                    <div className="border-none">
+                      <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Your Email Address</label>
+                      <input 
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        type="email" 
+                        className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none transition-all ${errors.email ? 'border-red-500 focus:ring-red-200' : 'border-transparent'}`} 
+                        placeholder="john@example.com" 
+                      />
+                      {errors.email && <p className="text-red-500 text-[10px] mt-1 font-bold italic tracking-wide">{errors.email}</p>}
+                    </div>
+                  </div>
+                  <div className="border-none">
+                    <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Business Name</label>
+                    <input 
+                      name="business"
+                      value={formData.business}
+                      onChange={handleChange}
+                      type="text" 
+                      className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none" 
+                      placeholder="My Enterprise" 
+                    />
+                  </div>
+                  <div className="border-none">
+                    <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Service Needed</label>
+                    <select 
+                      name="service"
+                      value={formData.service}
+                      onChange={handleChange}
+                      className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:ring-2 focus:ring-primary h-auto font-bold appearance-none outline-none"
+                    >
+                      <option>Website Design</option>
+                      <option>Cyber & Online Services</option>
+                      <option>Social Media Marketing</option>
+                      <option>Branding</option>
+                      <option>IT Support</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div className="border-none">
+                    <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Message</label>
+                    <textarea 
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      rows={4} 
+                      className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none transition-all ${errors.message ? 'border-red-500 focus:ring-red-200' : 'border-transparent'}`} 
+                      placeholder="Tell us more about your project..."
+                    ></textarea>
+                    {errors.message && <p className="text-red-500 text-[10px] mt-1 font-bold italic tracking-wide">{errors.message}</p>}
+                  </div>
+                  <p className="text-xs text-slate-500 italic mb-4">⚡ We usually respond within a few hours during working time.</p>
+                  <button 
+                    disabled={isSubmitting}
+                    className="w-full bg-primary text-white py-5 rounded-xl font-bold text-lg hover:bg-primary-dark transition-all border-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin h-auto" />
+                        Sending...
+                      </>
+                    ) : '👉 Send Message'}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -772,7 +912,7 @@ const CyberPortals = () => {
   const portalServices = [
     {
       title: "KRA Tax Services",
-      desc: "Stay compliant and avoid penalties with our expert tax assistance.",
+      desc: "Protect your business from the taxman and enjoy peace of mind. We ensure your returns are filed accurately and on time so you can focus on building your empire.",
       items: [
         "Annual Income Tax Returns",
         "KRA PIN Registration",
@@ -783,7 +923,7 @@ const CyberPortals = () => {
     },
     {
       title: "e-Citizen Services",
-      desc: "Fast-track your government applications through the official portal.",
+      desc: "Don't let bureaucracy slow you down. We handle the technical side of government portals to get your critical documents processed in record time.",
       items: [
         "Business Name Registration",
         "Certificate of Good Conduct",
