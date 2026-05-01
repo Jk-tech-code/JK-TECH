@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Logo } from './components/Logo';
+import { LoginPage } from './components/LoginPage';
 import { 
   Globe, 
   Share2, 
@@ -17,19 +18,75 @@ import {
   Mail, 
   MapPin, 
   ArrowRight, 
+  ChevronRight, 
+  Check, 
+  X, 
+  ArrowUpRight, 
   Menu, 
-  X,
-  Instagram,
-  Facebook,
-  Twitter,
-  ChevronRight,
-  Plus
+  Shield, 
+  Lock, 
+  Clock, 
+  Users, 
+  Play, 
+  Zap, 
+  Instagram, 
+  Facebook, 
+  Twitter, 
+  Plus,
+  AlertCircle,
+  User,
+  ShieldCheck,
+  LayoutDashboard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from './lib/supabase';
+import { User as SupabaseUser } from '@supabase/supabase-js';
+import { ClientDashboard } from './components/ClientDashboard';
+
+// --- Helpers ---
+
+const getShareUrl = (platform: string, title: string, url: string = window.location.href) => {
+  const encodedTitle = encodeURIComponent(title);
+  const encodedUrl = encodeURIComponent(url);
+  
+  switch(platform) {
+    case 'facebook': return `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+    case 'twitter': return `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
+    case 'whatsapp': return `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`;
+    default: return '#';
+  }
+};
+
+const ShareButtons = ({ title, className = "" }: { title: string, className?: string }) => {
+  const shareLinks = [
+    { platform: 'whatsapp', icon: <MessageSquare size={16} />, color: 'hover:bg-[#25D366]', label: 'Share on WhatsApp' },
+    { platform: 'facebook', icon: <Facebook size={16} />, color: 'hover:bg-[#1877F2]', label: 'Share on Facebook' },
+    { platform: 'twitter', icon: <Twitter size={16} />, color: 'hover:bg-[#000000]', label: 'Share on X' }
+  ];
+
+  return (
+    <div className={`flex gap-2 ${className}`}>
+      {shareLinks.map((link) => (
+        <button
+          key={link.platform}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.open(getShareUrl(link.platform, title), '_blank', 'width=600,height=400');
+          }}
+          className={`w-8 h-8 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white transition-all ${link.color} hover:scale-110 active:scale-95 border border-white/30`}
+          title={link.label}
+        >
+          {link.icon}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 // --- Components ---
 
-const Navbar = () => {
+const Navbar = ({ onLoginClick, user }: { onLoginClick: () => void, user: SupabaseUser | null }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -47,6 +104,7 @@ const Navbar = () => {
     { name: 'Services', href: '#services' },
     { name: 'Pricing', href: '#pricing' },
     { name: 'Portfolio', href: '#portfolio' },
+    { name: 'Client Portal', href: '#client-portal' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -64,17 +122,23 @@ const Navbar = () => {
             <a 
               key={link.name} 
               href={link.href} 
+              onClick={(e) => {
+                if (link.name === 'Client Portal' && !user) {
+                  e.preventDefault();
+                  onLoginClick();
+                }
+              }}
               className="font-medium hover:text-primary transition-colors border-none"
             >
               {link.name}
             </a>
           ))}
-          <a 
-            href="#contact" 
+          <button 
+            onClick={onLoginClick}
             className="bg-primary text-white px-6 py-2 rounded-full font-semibold hover:bg-primary-dark transition-all hover:scale-105 active:scale-95 border-none"
           >
-            Get a Quote
-          </a>
+            {user ? 'Dashboard' : 'Login'}
+          </button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -101,14 +165,29 @@ const Navbar = () => {
                   key={link.name} 
                   href={link.href} 
                   className="text-lg font-medium py-2 hover:text-primary transition-colors border-none"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={(e) => {
+                    setIsMenuOpen(false);
+                    if (link.name === 'Client Portal' && !user) {
+                      e.preventDefault();
+                      onLoginClick();
+                    }
+                  }}
                 >
                   {link.name}
                 </a>
               ))}
+              <button 
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onLoginClick();
+                }}
+                className="w-full bg-primary text-white py-4 rounded-xl font-bold mt-2 border-none"
+              >
+                {user ? 'Dashboard' : 'Login'}
+              </button>
               <a 
                 href="#contact" 
-                className="bg-primary text-white px-6 py-3 rounded-xl font-semibold text-center hover:bg-primary-dark transition-all border-none"
+                className="bg-slate-100 text-slate-900 px-6 py-3 rounded-xl font-semibold text-center hover:bg-slate-200 transition-all border-none"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Get a Quote
@@ -503,9 +582,12 @@ const Portfolio = () => {
                 className="w-full aspect-[4/5] object-cover group-hover:scale-110 transition-transform duration-500 h-auto" 
                 alt={item.title}
               />
-              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white border-none">
+              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white border-none transition-all duration-300 group-hover:pb-10">
                 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1 border-none">{item.category}</p>
-                <p className="text-xl font-bold border-none">{item.title}</p>
+                <div className="flex justify-between items-end border-none">
+                  <p className="text-xl font-bold border-none">{item.title}</p>
+                  <ShareButtons title={`Check out this project: ${item.title}`} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
               </div>
             </div>
           ))}
@@ -537,7 +619,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="py-24 bg-white border-none">
+    <section id="testimonials" className="py-24 bg-white border-none">
       <div className="container mx-auto px-4 md:px-6 border-none">
         <div className="text-center max-w-3xl mx-auto mb-16 border-none">
           <h2 className="text-primary font-bold text-lg mb-4 h-auto border-none">Testimonials</h2>
@@ -579,13 +661,26 @@ const Contact = () => {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+    if (!formData.name.trim()) {
+      newErrors.name = 'Please enter your full name so we know who we are talking to.';
     }
-    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'We need your email to send you a quote.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'This email address doesn\'t look right. Please check it.';
+    }
+
+    if (!formData.business.trim()) {
+      newErrors.business = 'Sharing your business name helps us understand your needs better.';
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Tell us a little bit about what you need help with.';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Please provide a bit more detail (at least 10 characters).';
+    }
+    
     return newErrors;
   };
 
@@ -719,10 +814,21 @@ const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         type="text" 
-                        className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none transition-all ${errors.name ? 'border-red-500 focus:ring-red-200' : 'border-transparent'}`} 
+                        className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-4 transition-all duration-200 outline-none h-auto ${errors.name ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:ring-primary/10 hover:border-slate-200'}`} 
                         placeholder="John Doe" 
                       />
-                      {errors.name && <p className="text-red-500 text-[10px] mt-1 font-bold italic tracking-wide">{errors.name}</p>}
+                      <AnimatePresence>
+                        {errors.name && (
+                          <motion.p 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-red-500 text-xs mt-2 font-medium flex items-center gap-1"
+                          >
+                            <AlertCircle size={12} /> {errors.name}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                     </div>
                     <div className="border-none">
                       <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Your Email Address</label>
@@ -731,10 +837,21 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         type="email" 
-                        className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none transition-all ${errors.email ? 'border-red-500 focus:ring-red-200' : 'border-transparent'}`} 
+                        className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-4 transition-all duration-200 outline-none h-auto ${errors.email ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:ring-primary/10 hover:border-slate-200'}`} 
                         placeholder="john@example.com" 
                       />
-                      {errors.email && <p className="text-red-500 text-[10px] mt-1 font-bold italic tracking-wide">{errors.email}</p>}
+                      <AnimatePresence>
+                        {errors.email && (
+                          <motion.p 
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-red-500 text-xs mt-2 font-medium flex items-center gap-1"
+                          >
+                            <AlertCircle size={12} /> {errors.email}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                   <div className="border-none">
@@ -744,9 +861,21 @@ const Contact = () => {
                       value={formData.business}
                       onChange={handleChange}
                       type="text" 
-                      className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none" 
+                      className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-4 transition-all duration-200 outline-none h-auto ${errors.business ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:ring-primary/10 hover:border-slate-200'}`} 
                       placeholder="My Enterprise" 
                     />
+                    <AnimatePresence>
+                      {errors.business && (
+                        <motion.p 
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="text-red-500 text-xs mt-2 font-medium flex items-center gap-1"
+                        >
+                          <AlertCircle size={12} /> {errors.business}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
                   </div>
                   <div className="border-none">
                     <label className="block text-sm font-bold text-slate-700 mb-2 border-none">Service Needed</label>
@@ -771,10 +900,21 @@ const Contact = () => {
                       value={formData.message}
                       onChange={handleChange}
                       rows={4} 
-                      className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-2 focus:ring-primary h-auto outline-none transition-all ${errors.message ? 'border-red-500 focus:ring-red-200' : 'border-transparent'}`} 
+                      className={`w-full px-5 py-4 bg-slate-50 border-2 rounded-xl focus:ring-4 transition-all duration-200 outline-none h-auto ${errors.message ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:ring-primary/10 hover:border-slate-200'}`} 
                       placeholder="Tell us more about your project..."
                     ></textarea>
-                    {errors.message && <p className="text-red-500 text-[10px] mt-1 font-bold italic tracking-wide">{errors.message}</p>}
+                    <AnimatePresence>
+                      {errors.message && (
+                        <motion.p 
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className="text-red-500 text-xs mt-2 font-medium flex items-center gap-1"
+                        >
+                          <AlertCircle size={12} /> {errors.message}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
                   </div>
                   <p className="text-xs text-slate-500 italic mb-4">⚡ We usually respond within a few hours during working time.</p>
                   <button 
@@ -806,7 +946,7 @@ const BlogTeaser = () => {
   ];
 
   return (
-    <section className="py-24 bg-white border-none">
+    <section id="blog" className="py-24 bg-white border-none">
       <div className="container mx-auto px-4 md:px-6 border-none">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-none">
           <div className="max-w-2xl border-none">
@@ -819,11 +959,29 @@ const BlogTeaser = () => {
         </div>
         <div className="grid md:grid-cols-3 gap-8 border-none font-bold">
           {posts.map((post) => (
-            <div key={post.title} className="p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all border-none font-bold">
-              <p className="text-xs font-bold text-primary uppercase mb-4 border-none font-bold">{post.category}</p>
-              <h4 className="text-xl font-bold text-slate-900 mb-4 border-none font-bold">{post.title}</h4>
-              <p className="text-slate-500 mb-6 border-none font-bold">{post.date}</p>
-              <a href="#" className="flex items-center gap-2 font-bold text-slate-900 border-none font-bold">Read More <ChevronRight size={18} /></a>
+            <div key={post.title} className="group p-8 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-xl transition-all border-none font-bold relative flex flex-col justify-between">
+              <div className="border-none font-bold">
+                <div className="flex justify-between items-start mb-4 border-none">
+                  <p className="text-xs font-bold text-primary uppercase border-none font-bold">{post.category}</p>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 border-none">
+                    <button 
+                      onClick={() => window.open(getShareUrl('whatsapp', post.title), '_blank')}
+                      className="text-slate-400 hover:text-[#25D366] transition-colors border-none"
+                    >
+                      <MessageSquare size={16} />
+                    </button>
+                    <button 
+                      onClick={() => window.open(getShareUrl('facebook', post.title), '_blank')}
+                      className="text-slate-400 hover:text-[#1877F2] transition-colors border-none"
+                    >
+                      <Facebook size={16} />
+                    </button>
+                  </div>
+                </div>
+                <h4 className="text-xl font-bold text-slate-900 mb-4 border-none font-bold">{post.title}</h4>
+                <p className="text-slate-500 mb-6 border-none font-bold">{post.date}</p>
+              </div>
+              <a href="#" className="flex items-center gap-2 font-bold text-slate-900 border-none font-bold group-hover:text-primary transition-colors">Read More <ChevronRight size={18} /></a>
             </div>
           ))}
         </div>
@@ -833,6 +991,30 @@ const BlogTeaser = () => {
 };
 
 const Footer = () => {
+  const footerLinks = {
+    quick: [
+      { name: 'Home', href: '#' },
+      { name: 'Pricing', href: '#pricing' },
+      { name: 'Portfolio', href: '#portfolio' },
+      { name: 'Client Portal', href: '#client-portal' },
+      { name: 'Contact Us', href: '#contact' },
+    ],
+    services: [
+      { name: 'Website Design', href: '#services' },
+      { name: 'Cyber Services', href: '#cyber-services' },
+      { name: 'Digital Marketing', href: '#services' },
+      { name: 'Branding & Design', href: '#services' },
+      { name: 'IT Support', href: '#services' },
+    ],
+    company: [
+      { name: 'About Us', href: '#about' },
+      { name: 'Testimonials', href: '#testimonials' },
+      { name: 'Latest Blog', href: '#blog' },
+      { name: 'Privacy Policy', href: '#' },
+      { name: 'Terms of Service', href: '#' },
+    ]
+  };
+
   return (
     <footer className="bg-slate-50 pt-20 pb-10 border-t border-slate-200 border-none">
       <div className="container mx-auto px-4 md:px-6 border-none">
@@ -855,8 +1037,8 @@ const Footer = () => {
           <div className="border-none font-bold">
             <h4 className="font-bold text-slate-900 mb-6 border-none font-bold">Quick Links</h4>
             <ul className="space-y-4 border-none font-bold">
-              {['Home', 'About Us', 'Services', 'Pricing', 'Portfolio', 'Contact'].map((item) => (
-                <li key={item}><a href={`#${item.toLowerCase().replace(' ', '')}`} className="text-slate-500 hover:text-primary transition-colors border-none font-bold">{item}</a></li>
+              {footerLinks.quick.map((link) => (
+                <li key={link.name}><a href={link.href} className="text-slate-500 hover:text-primary transition-colors border-none font-bold">{link.name}</a></li>
               ))}
             </ul>
           </div>
@@ -864,21 +1046,19 @@ const Footer = () => {
           <div className="border-none font-bold">
             <h4 className="font-bold text-slate-900 mb-6 border-none font-bold">Our Services</h4>
             <ul className="space-y-4 border-none font-bold">
-              {['Website Design', 'Social Media', 'Online Ads', 'Branding', 'IT Support'].map((item) => (
-                <li key={item}><a href="#services" className="text-slate-500 hover:text-primary transition-colors border-none font-bold">{item}</a></li>
+              {footerLinks.services.map((link) => (
+                <li key={link.name}><a href={link.href} className="text-slate-500 hover:text-primary transition-colors border-none font-bold">{link.name}</a></li>
               ))}
             </ul>
           </div>
           
           <div className="border-none font-bold">
-            <h4 className="font-bold text-slate-900 mb-6 border-none font-bold">Newsletter</h4>
-            <p className="text-slate-500 mb-6 border-none font-bold">Get monthly marketing tips to grow your agency.</p>
-            <div className="flex gap-2 border-none font-bold">
-              <input type="email" placeholder="Your email" className="bg-white border border-slate-200 px-4 py-3 rounded-xl flex-grow focus:ring-2 focus:ring-primary h-auto border-none font-bold" />
-              <button className="bg-primary text-white p-3 rounded-xl hover:bg-primary-dark transition-all h-auto border-none font-bold">
-                <ChevronRight />
-              </button>
-            </div>
+            <h4 className="font-bold text-slate-900 mb-6 border-none font-bold">Company</h4>
+            <ul className="space-y-4 border-none font-bold">
+              {footerLinks.company.map((link) => (
+                <li key={link.name}><a href={link.href} className="text-slate-500 hover:text-primary transition-colors border-none font-bold">{link.name}</a></li>
+              ))}
+            </ul>
           </div>
         </div>
         
@@ -891,6 +1071,103 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+  );
+};
+
+const ClientPortal = ({ onLoginClick, user }: { onLoginClick: () => void, user: SupabaseUser | null }) => {
+  const portalFeatures = [
+    {
+      title: "Real-time Updates",
+      desc: "Track the progress of your active projects and milestones as we reach them.",
+      icon: <LayoutDashboard className="text-primary" size={24} />
+    },
+    {
+      title: "Secure Documents",
+      desc: "Access and download your invoices, contracts, and digital certificates safely.",
+      icon: <ShieldCheck className="text-primary" size={24} />
+    },
+    {
+      title: "Priority Support",
+      desc: "Existing clients get access to a dedicated support desk for instant assistance.",
+      icon: <MessageSquare className="text-primary" size={24} />
+    }
+  ];
+
+  return (
+    <section id="client-portal" className="py-24 bg-slate-900 text-white border-none overflow-hidden relative">
+      <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+      <div className="container mx-auto px-4 md:px-6 relative z-10 border-none">
+        <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 p-12 rounded-[40px] border-none">
+          <div className="grid lg:grid-cols-2 gap-16 items-center border-none">
+            <div className="border-none font-bold">
+              <div className="inline-flex items-center gap-2 bg-primary/20 text-primary border border-primary/20 px-4 py-2 rounded-full text-sm font-bold mb-6 h-auto">
+                <User size={16} /> Exclusive for JK Tech Clients
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight border-none">Your Dedicated Project Portal</h2>
+              <p className="text-lg text-slate-400 mb-10 leading-relaxed border-none">
+                We believe in total transparency. Our Client Portal allows you to manage your relationship with us in one place—from tracking design progress to managing your cyber service applications.
+              </p>
+              <div className="space-y-6 border-none">
+                {portalFeatures.map((feature) => (
+                  <div key={feature.title} className="flex gap-4 border-none">
+                    <div className="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border-none">
+                      {feature.icon}
+                    </div>
+                    <div className="border-none">
+                      <h4 className="text-lg font-bold text-white mb-1 border-none">{feature.title}</h4>
+                      <p className="text-sm text-slate-500 border-none">{feature.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-12 flex flex-col sm:flex-row gap-4 border-none font-bold">
+                <button 
+                  onClick={onLoginClick}
+                  className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-primary-dark transition-all text-center border-none shadow-[0_0_20px_rgba(14,165,233,0.3)]"
+                >
+                  {user ? 'Go to Dashboard' : 'Login to Portal'}
+                </button>
+                <a 
+                  href="#contact" 
+                  className="bg-white/10 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all text-center border-none"
+                >
+                  Learn More
+                </a>
+              </div>
+            </div>
+            <div className="relative border-none h-auto lg:block hidden">
+              <div className="bg-gradient-to-br from-primary/20 to-transparent absolute -inset-10 blur-3xl -z-10 rounded-full h-auto border-none" />
+              <div className="bg-slate-900 p-4 rounded-3xl border border-slate-700 shadow-2xl h-auto border-none">
+                <div className="bg-slate-800 rounded-2xl p-6 border-none h-auto">
+                  <div className="flex justify-between items-center mb-8 border-none font-bold">
+                    <div className="flex gap-2 border-none">
+                      <div className="w-3 h-3 rounded-full bg-red-400 h-auto border-none" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-400 h-auto border-none" />
+                      <div className="w-3 h-3 rounded-full bg-green-400 h-auto border-none" />
+                    </div>
+                    <div className="w-32 h-2 bg-slate-700 rounded-full h-auto border-none" />
+                  </div>
+                  <div className="space-y-4 border-none font-bold">
+                    <div className="h-8 bg-slate-700 rounded-lg w-3/4 animate-pulse border-none" />
+                    <div className="grid grid-cols-2 gap-4 border-none">
+                      <div className="h-24 bg-slate-700/50 rounded-xl border border-slate-700 border-none" />
+                      <div className="h-24 bg-slate-700/50 rounded-xl border border-slate-700 border-none" />
+                    </div>
+                    <div className="h-32 bg-slate-700/50 rounded-xl border border-slate-700 border-none" />
+                    <div className="flex justify-end border-none">
+                      <div className="h-10 bg-primary/40 rounded-lg w-24 border-none" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute -bottom-8 -right-8 bg-primary p-6 rounded-2xl shadow-xl border-none">
+                <CheckCircle2 size={32} className="text-white" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -977,9 +1254,54 @@ const CyberPortals = () => {
 };
 
 export default function App() {
+  const [view, setView] = useState<'landing' | 'login' | 'dashboard'>('landing');
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+      if (session?.user) setView('dashboard');
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        setView('dashboard');
+      } else {
+        if (view === 'dashboard') setView('landing');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [view]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [view]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (view === 'login' && !user) {
+    return <LoginPage onBack={() => setView('landing')} />;
+  }
+
+  if (view === 'dashboard' && user) {
+    return <ClientDashboard user={user} onLogout={() => setView('landing')} />;
+  }
+
   return (
     <div className="selection:bg-primary selection:text-white border-none bg-white">
-      <Navbar />
+      <Navbar onLoginClick={() => setView(user ? 'dashboard' : 'login')} user={user} />
       <main className="border-none">
         <Hero />
         <About />
@@ -989,6 +1311,7 @@ export default function App() {
         <HowItWorks />
         <Pricing />
         <Portfolio />
+        <ClientPortal onLoginClick={() => setView(user ? 'dashboard' : 'login')} user={user} />
         <Testimonials />
         <BlogTeaser />
         <Contact />
