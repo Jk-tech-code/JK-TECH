@@ -26,6 +26,7 @@ import {
   Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // --- Components ---
 
@@ -995,6 +996,7 @@ export default function App() {
       </main>
       <Footer />
       <WhatsAppButton />
+      <SpeedInsights />
     </div>
   );
 }
