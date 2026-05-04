@@ -16,7 +16,8 @@ import {
   Calendar,
   Info,
   Plus,
-  AlertCircle
+  AlertCircle,
+  Trash2
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
@@ -31,6 +32,9 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [newProject, setNewProject] = useState({
@@ -68,6 +72,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
         const { data: projectsData, error: projectsError } = await supabase
           .from('projects')
           .select('*')
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false });
 
         if (projectsError) throw projectsError;
@@ -92,6 +97,13 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
 
     fetchData();
   }, [user.id]);
+
+  useEffect(() => {
+    // Clear states when switching tabs to ensure clean view
+    setSelectedProject(null);
+    setShowCreateForm(false);
+    setSearchQuery('');
+  }, [activeTab]);
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,6 +151,27 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
       }
     } catch (error) {
       console.error("Error creating project:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      setSubmitting(true);
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', projectId);
+
+      if (error) throw error;
+
+      setDbProjects(dbProjects.filter(p => p.id !== projectId));
+      setSelectedProject(null);
+      setShowDeleteConfirm(false);
+      setProjectToDelete(null);
+    } catch (error) {
+      console.error("Error deleting project:", error);
     } finally {
       setSubmitting(false);
     }
@@ -222,12 +255,14 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="relative hidden sm:block">
+            <div className={`relative hidden sm:block ${activeTab !== 'overview' && activeTab !== 'projects' ? 'opacity-50 pointer-events-none' : ''}`}>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <input 
                 type="text" 
                 placeholder="Search projects..." 
                 className="pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary h-auto"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <button className="relative text-slate-400 hover:text-primary transition-colors">
@@ -288,58 +323,103 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                         </span>
                       </div>
                     </div>
-                    <span className={`self-start px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${selectedProject.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-600'}`}>
+                    <span className={`self-start px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                      selectedProject.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 
+                      selectedProject.status === 'Planning' ? 'bg-purple-100 text-purple-600' :
+                      selectedProject.status === 'Pending' ? 'bg-amber-100 text-amber-600' :
+                      'bg-slate-200 text-slate-600'
+                    }`}>
                       {selectedProject.status}
                     </span>
+                    <button 
+                      onClick={() => {
+                        setProjectToDelete(selectedProject);
+                        setShowDeleteConfirm(true);
+                      }}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all rounded-xl ml-auto"
+                      title="Delete Project"
+                    >
+                      <Trash2 size={20} />
+                    </button>
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-8">
                     <div className="md:col-span-2 space-y-8">
                       <div className="space-y-4">
                         <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                          <FileText size={18} className="text-slate-400" />
                           Description
                         </h4>
-                        <div className="p-6 bg-slate-50 rounded-2xl text-slate-600 leading-relaxed">
+                        <div className="p-6 bg-slate-50 rounded-2xl text-slate-600 leading-relaxed font-medium">
                           {selectedProject.desc || 'No description provided for this project.'}
                         </div>
                       </div>
 
                       <div className="space-y-4">
-                        <h4 className="font-bold text-slate-800">Current Progress</h4>
-                        <div className="space-y-3">
-                          <div className="flex justify-between text-sm font-bold text-slate-700">
-                            <span>Development Lifecycle</span>
-                            <span>{selectedProject.progress}%</span>
+                        <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                          <BarChart3 size={18} className="text-slate-400" />
+                          Current Progress
+                        </h4>
+                        <div className="space-y-4">
+                          <div className="flex justify-between text-sm font-bold text-slate-700 items-end">
+                            <span className="flex flex-col">
+                              <span className="text-slate-400 text-[10px] uppercase tracking-wider mb-1">Development Phase</span>
+                              {selectedProject.progress}% Complete
+                            </span>
+                            <span className="text-primary text-[10px] uppercase tracking-wider font-extrabold px-2 py-1 bg-primary/5 rounded-md">Active Tier</span>
                           </div>
                           <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 border border-slate-200">
                             <motion.div 
                               initial={{ width: 0 }}
                               animate={{ width: `${selectedProject.progress}%` }}
-                              className="h-full bg-primary rounded-full"
+                              className="h-full bg-primary rounded-full shadow-sm"
                             />
                           </div>
-                          <p className="text-xs text-slate-500 italic mt-2">
-                            Next Milestone: <span className="text-primary font-bold">{selectedProject.next_milestone || 'Consultation scheduled'}</span>
-                          </p>
+                          <div className="flex items-center gap-4 pt-2">
+                            <div className="flex-1 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                              <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Next Milestone</p>
+                              <p className="text-sm font-bold text-slate-900">{selectedProject.next_milestone || 'Consultation scheduled'}</p>
+                            </div>
+                            <div className="flex-1 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                              <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Estimated Completion</p>
+                              <p className="text-sm font-bold text-slate-900">Q3 2026</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-6">
-                      <div className="p-6 bg-slate-900 rounded-2xl text-white">
-                        <h4 className="font-bold mb-4">Project Team</h4>
+                      <div className="p-6 bg-slate-900 rounded-2xl text-white shadow-xl shadow-slate-200">
+                        <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-slate-400">Project Team</h4>
                         <div className="space-y-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-[10px] font-bold">JK</div>
+                            <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">JK</div>
                             <div>
-                              <p className="text-xs font-bold text-white">Jared Kipkemoi</p>
-                              <p className="text-[10px] text-white/50">Lead Digital Strategist</p>
+                              <p className="text-sm font-bold text-white">Jared Kipkemoi</p>
+                              <p className="text-[10px] text-white/50 font-medium">Lead Digital Strategist</p>
                             </div>
                           </div>
                         </div>
-                        <button className="w-full mt-6 bg-white/10 hover:bg-white/20 py-2.5 rounded-xl text-xs font-bold transition-all">
-                          Contact PM
-                        </button>
+                        <div className="mt-8 pt-6 border-t border-white/5">
+                          <button className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg shadow-primary/20">
+                            Send Message
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="p-6 border-2 border-slate-100 rounded-2xl">
+                        <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-slate-400">Quick Actions</h4>
+                        <div className="space-y-3">
+                          <button className="w-full text-left p-3 rounded-xl hover:bg-slate-50 transition-all group flex items-center justify-between">
+                            <span className="text-xs font-bold text-slate-600 group-hover:text-primary">Download Assets</span>
+                            <ExternalLink size={14} className="text-slate-300" />
+                          </button>
+                          <button className="w-full text-left p-3 rounded-xl hover:bg-slate-50 transition-all group flex items-center justify-between">
+                            <span className="text-xs font-bold text-slate-600 group-hover:text-primary">Request Revision</span>
+                            <ExternalLink size={14} className="text-slate-300" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -461,19 +541,25 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                       <button className="text-primary text-sm font-bold hover:underline">View All</button>
                     </div>
                   </div>
-                  <div className="space-y-6">
-                    {dbProjects.length === 0 ? (
+                    <div className="space-y-6">
+                    {dbProjects.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
                       <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                        <p className="text-slate-500 font-bold">No projects found.</p>
-                        <button 
-                          onClick={() => setShowCreateForm(true)}
-                          className="text-primary text-sm font-bold mt-2 hover:underline"
-                        >
-                          Start a Project
-                        </button>
+                        <p className="text-slate-500 font-bold">
+                          {searchQuery ? 'No projects match your search.' : 'No projects found.'}
+                        </p>
+                        {!searchQuery && (
+                          <button 
+                            onClick={() => setShowCreateForm(true)}
+                            className="text-primary text-sm font-bold mt-2 hover:underline"
+                          >
+                            Start a Project
+                          </button>
+                        )}
                       </div>
                     ) : (
-                      dbProjects.map((project) => (
+                      dbProjects
+                        .filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                        .map((project) => (
                         <div 
                           key={project.id} 
                           onClick={() => setSelectedProject(project)}
@@ -484,7 +570,12 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                               <h4 className="font-bold text-slate-800 group-hover:text-primary transition-colors">{project.name}</h4>
                               <p className="text-xs text-slate-500 mt-1 font-bold">Next: {project.next_milestone || 'N/A'}</p>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${project.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-600'}`}>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                              project.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 
+                              project.status === 'Planning' ? 'bg-purple-100 text-purple-600' :
+                              project.status === 'Pending' ? 'bg-amber-100 text-amber-600' :
+                              'bg-green-100 text-green-600'
+                            }`}>
                               {project.status}
                             </span>
                           </div>
@@ -540,6 +631,50 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
           </motion.div>
         </div>
       </main>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => !submitting && setShowDeleteConfirm(false)}
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-white rounded-3xl p-8 max-w-md w-full relative z-10 shadow-2xl border border-slate-100"
+          >
+            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-6">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">Delete Project?</h3>
+            <p className="text-slate-500 font-bold mb-8">
+              Are you sure you want to delete <span className="text-slate-900">"{projectToDelete?.name}"</span>? This action cannot be undone and all associated data will be permanently removed.
+            </p>
+            <div className="flex gap-4">
+              <button 
+                disabled={submitting}
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 active:scale-[0.98] transition-all disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button 
+                disabled={submitting}
+                onClick={() => handleDeleteProject(projectToDelete?.id)}
+                className="flex-1 px-6 py-4 rounded-2xl font-bold text-white bg-red-600 shadow-lg shadow-red-200 hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center"
+              >
+                {submitting ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : 'Delete'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
