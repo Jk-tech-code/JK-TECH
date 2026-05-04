@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '').trim();
-const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || 'https://hhyfwrqrqypldmwlsuvl.supabase.co').replace(/\/rest\/v1\/?$/, '').trim();
+const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoeWZ3cnFycXlwbGRtd2xzdXZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MjkzODUsImV4cCI6MjA5MzIwNTM4NX0.KspFWxR3DmxE76UQEdrEK1UBV0dfPCVzWX7_2Fg6bmU').trim();
 
 const isUrlValid = (url: string) => {
   try {
@@ -29,6 +29,6 @@ export const supabase = createClient(finalUrl, finalKey, {
     detectSessionInUrl: true
   },
   global: {
-    fetch: window.fetch.bind(window)
+    fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, init)
   }
 });

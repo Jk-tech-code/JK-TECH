@@ -31,7 +31,36 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
+
+  const loadingMessages = [
+    'Securing your account...',
+    'Building your tech portal...',
+    'Setting up your workspace...',
+    'Finalizing details...'
+  ];
+
+  const handleResendEmail = async () => {
+    if (!formData.email) return;
+    setResending(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: formData.email,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+      setSuccessMessage('New confirmation email sent! Please check your inbox.');
+    } catch (error: any) {
+      setErrors({ auth: error.message || 'Failed to resend email.' });
+    } finally {
+      setResending(false);
+    }
+  };
 
   const handleGoogleLogin = async () => {
     setIsSubmitting(true);
@@ -90,6 +119,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
     setErrors({});
     setIsSubmitting(true);
     setSuccessMessage(null);
+    setLoadingStep(0);
+    
+    // Rotate loading messages every 2 seconds for a better psychological feel
+    const stepInterval = setInterval(() => {
+      setLoadingStep(prev => (prev < loadingMessages.length - 1 ? prev + 1 : prev));
+    }, 1200);
     
     try {
       if (mode === 'login') {
@@ -105,11 +140,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
           options: {
             data: {
               full_name: formData.fullName
-            }
+            },
+            emailRedirectTo: window.location.origin
           }
         });
         if (error) throw error;
-        setSuccessMessage('Registration successful! Please check your email to confirm your account.');
+        setSuccessMessage('Almost there! We\'ve sent a confirmation link to ' + formData.email + '. Please click it to activate your account.');
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email);
         if (error) throw error;
@@ -119,6 +155,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
       console.error("Auth error:", error);
       setErrors({ auth: error.message || 'An unexpected error occurred. Please try again.' });
     } finally {
+      clearInterval(stepInterval);
       setIsSubmitting(false);
     }
   };
@@ -312,11 +349,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
             <div className="pt-2">
               <button 
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || resending}
                 className="w-full bg-primary text-white py-4 px-6 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed h-auto"
               >
                 {isSubmitting ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin h-auto" />
+                  <div className="flex flex-col items-center">
+                    <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin h-auto mb-1" />
+                    <span className="text-[10px] uppercase tracking-widest opacity-80">{loadingMessages[loadingStep]}</span>
+                  </div>
                 ) : (
                   <>
                     {mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'}
@@ -325,6 +365,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                 )}
               </button>
             </div>
+
+            {mode === 'signup' && successMessage && !isSubmitting && (
+              <div className="text-center pt-2">
+                <p className="text-xs text-slate-500 font-medium mb-2">Didn't receive the email? Check spam or:</p>
+                <button 
+                  type="button"
+                  onClick={handleResendEmail}
+                  disabled={resending}
+                  className="text-xs font-bold text-primary hover:underline transition-all disabled:opacity-50"
+                >
+                  {resending ? 'Resending...' : 'Resend Confirmation Email'}
+                </button>
+              </div>
+            )}
 
             {mode !== 'forgot' && (
               <>
@@ -368,10 +422,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
               New client? <button onClick={() => setMode('signup')} className="text-primary hover:underline">Create an account</button>
             </p>
           )}
-          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-100 shadow-sm">
-            <ShieldCheck size={14} className="text-green-500" />
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Secure Supabase Auth protected session</span>
-          </div>
         </div>
       </motion.div>
     </div>
