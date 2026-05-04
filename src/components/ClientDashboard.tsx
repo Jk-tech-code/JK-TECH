@@ -25,7 +25,8 @@ import {
   Target,
   CheckCircle2,
   Camera,
-  ShieldAlert
+  ShieldAlert,
+  X
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
@@ -67,7 +68,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
   const [adminPassword, setAdminPassword] = useState('');
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [showAdminGate, setShowAdminGate] = useState(false);
-  const isAdmin = user.email === 'kipkemoijared855@gmail.com';
+  const isAdmin = user.email?.toLowerCase() === 'kipkemoijared855@gmail.com';
 
   useEffect(() => {
     // Apply theme
@@ -455,33 +456,32 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
               icon={<ShieldAlert size={20} className="text-accent" />} 
               label="Admin Terminal" 
               active={activeTab === 'admin'} 
-              onClick={() => {
-                if (!isAdminAuthenticated) {
-                  setShowAdminGate(true);
-                } else {
-                  setActiveTab('admin');
-                }
-              }} 
+            onClick={() => {
+              setActiveTab('admin');
+              if (!isAdminAuthenticated) {
+                setShowAdminGate(true);
+              }
+            }} 
               className="mt-6 border-t border-white/5 pt-6"
             />
           )}
         </nav>
 
-        <div className="p-8 mt-auto border-t border-white/5 bg-slate-950/50 backdrop-blur-md">
+        <div className="p-10 bg-slate-50 border-t border-white/5 bg-slate-950/50 backdrop-blur-md">
           <SidebarItem 
-            icon={<Settings size={20} />} 
+            icon={<Settings size={18} />} 
             label="Settings" 
             active={activeTab === 'settings'} 
             onClick={() => setActiveTab('settings')} 
           />
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold mt-3 group"
+            className="w-full flex items-center gap-3 px-6 py-4 rounded-2xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold mt-2 group"
           >
-            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-red-500/20 group-hover:text-red-400 transition-all">
-              <LogOut size={16} />
+            <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-red-500/20 group-hover:text-red-400 transition-all">
+              <LogOut size={14} />
             </div>
-            <span className="text-[10px] uppercase tracking-widest">Terminate Session</span>
+            <span className="text-[9px] uppercase tracking-[0.15em]">Terminate</span>
           </button>
         </div>
       </aside>
@@ -489,32 +489,32 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
       {/* Main Content - Improved Visual Flow */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden mesh-bg">
         {/* Header - Glassmorphism */}
-        <header className="bg-white/40 backdrop-blur-3xl border-b border-slate-100/50 px-10 py-6 flex justify-between items-center sticky top-0 z-30 shadow-[0_1px_40px_rgba(0,0,0,0.02)]">
+        <header className="bg-white/60 backdrop-blur-3xl border-b border-slate-100/50 px-8 py-5 flex justify-between items-center sticky top-0 z-30 shadow-sm">
           <div className="flex items-center gap-6">
-            <div className="lg:hidden p-3 rounded-2xl bg-white shadow-xl">
-               <Logo size={28} />
+            <div className="lg:hidden p-2.5 rounded-2xl bg-white shadow-xl">
+               <Logo size={24} />
             </div>
-            <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-6 bg-accent rounded-full" />
-                <h2 className="text-3xl font-display font-black text-slate-950 tracking-tighter uppercase italic leading-none">{activeTab}</h2>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-1.5 h-5 bg-accent rounded-full" />
+                <h2 className="text-2xl font-display font-black text-slate-950 tracking-tighter uppercase italic leading-none">{activeTab}</h2>
               </div>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] ml-5">Integrated Systems • Neural Sync v4.2</p>
+              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.15em] ml-4 opacity-80">Integrated Systems • Neural Sync v4.2</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-8">
-            <div className="hidden lg:flex items-center gap-3 px-5 py-3 bg-emerald-50 rounded-[20px] border border-emerald-100/50 shadow-sm animate-in fade-in zoom-in duration-1000">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-              <span className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em]">End-to-End Encrypted</span>
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-2.5 px-4 py-2 bg-emerald-50/50 rounded-xl border border-emerald-100/50 shadow-sm">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">End-to-End Encrypted</span>
             </div>
 
             <div className="relative hidden xl:block group">
               <input 
-                placeholder="Access module..."
-                className="pl-14 pr-8 py-4.5 bg-white border-transparent rounded-[24px] text-[11px] font-black uppercase tracking-widest outline-none ring-accent/0 focus:ring-8 focus:ring-accent/5 focus:shadow-2xl focus:border-accent/10 transition-all w-80 border-2 shadow-sm"
+                placeholder="Search resources..."
+                className="pl-12 pr-6 py-3.5 bg-slate-50 border-transparent rounded-2xl text-[10px] font-bold uppercase tracking-widest outline-none focus:bg-white focus:ring-4 focus:ring-accent/5 focus:shadow-lg transition-all w-64 border shadow-inner"
               />
-              <Search size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-accent transition-colors" />
+              <Search size={14} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-accent transition-colors" />
             </div>
 
             <div className="flex items-center gap-3">
@@ -524,12 +524,12 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
               </button>
             </div>
             
-            <div className="flex items-center gap-6 pl-10 border-l border-slate-200/50">
+            <div className="flex items-center gap-4 pl-8 border-l border-slate-200/50">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-display font-black text-slate-950 truncate max-w-[200px] leading-tight uppercase italic tracking-tight">{profile?.full_name || user.email?.split('@')[0]}</p>
-                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] leading-tight mt-1">Identity: <span className="text-accent">{profile?.role || 'Priority Client'}</span></p>
+                <p className="text-[11px] font-display font-black text-slate-950 truncate max-w-[150px] leading-tight uppercase italic tracking-tight">{profile?.full_name || user.email?.split('@')[0]}</p>
+                <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest leading-tight mt-0.5">Identity: <span className="text-accent">{profile?.role || 'Client'}</span></p>
               </div>
-              <div className="w-14 h-14 bg-slate-950 text-white rounded-[22px] flex items-center justify-center font-display font-black text-xl shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] ring-4 ring-white relative overflow-hidden group cursor-pointer active:scale-95 transition-transform">
+              <div className="w-12 h-12 bg-slate-950 text-white rounded-[18px] flex items-center justify-center font-display font-black text-lg shadow-lg ring-4 ring-white relative overflow-hidden group cursor-pointer active:scale-95 transition-transform">
                 <div className="absolute inset-0 bg-accent/20 blur-sm mix-blend-overlay group-hover:scale-150 transition-transform duration-700" />
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover relative z-10" />
@@ -569,37 +569,37 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           <StatCard icon={<BarChart3 className="text-slate-900" />} label="System Pulse" value="Optimal" color="bg-slate-100" />
                         </div>
                         
-                        <div className="bg-white p-12 rounded-[60px] border border-slate-100/50 shadow-2xl shadow-slate-200/20 relative overflow-hidden group">
+                        <div className="bg-white p-10 rounded-[40px] border border-slate-100/50 shadow-xl shadow-slate-200/10 relative overflow-hidden group">
                            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[120px] rounded-full -z-10 group-hover:scale-110 transition-transform duration-1000" />
-                           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
+                           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-10">
                               <div>
-                                <h3 className="text-3xl font-display font-black text-slate-950 tracking-tighter uppercase italic leading-none">Welcome back, {profile?.full_name?.split(' ')[0] || user.email?.split('@')[0]}</h3>
-                                <p className="text-[11px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-3">All systems operational. Ready for deployment.</p>
+                                <h3 className="text-2xl font-display font-black text-slate-950 tracking-tighter uppercase italic leading-none">Welcome back, {profile?.full_name?.split(' ')[0] || user.email?.split('@')[0]}</h3>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-3">All systems operational. Ready for deployment.</p>
                               </div>
                               <button 
                                 onClick={() => setActiveTab('projects')}
-                                className="px-10 py-5 bg-slate-950 text-white rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-accent hover:text-slate-950 transition-all shadow-xl shadow-slate-200"
+                                className="px-8 py-4 bg-slate-950 text-white rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-accent hover:text-slate-950 transition-all shadow-lg shadow-slate-200/50"
                               >
-                                View Operational Assets
+                                View Assets
                               </button>
                            </div>
-                           <div className="grid sm:grid-cols-2 gap-8">
-                              <div className="p-10 bg-slate-50/50 rounded-[40px] border border-slate-100 flex items-center gap-8 group/item hover:bg-white hover:shadow-xl transition-all duration-500">
-                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-sm flex items-center justify-center text-accent group-hover/item:rotate-12 transition-transform">
-                                    <Clock size={24} />
+                           <div className="grid sm:grid-cols-2 gap-6">
+                              <div className="p-8 bg-slate-50/50 rounded-[32px] border border-slate-100 flex items-center gap-6 group/item hover:bg-white hover:shadow-xl transition-all duration-500">
+                                 <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-accent group-hover/item:rotate-12 transition-transform">
+                                    <Clock size={22} />
                                  </div>
                                  <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Next Sync</p>
-                                    <p className="text-xl font-display font-black text-slate-950 uppercase italic tracking-tight">Today, 14:00</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Next Sync</p>
+                                    <p className="text-lg font-display font-black text-slate-950 uppercase italic tracking-tight">Today, 14:00</p>
                                  </div>
                               </div>
-                              <div className="p-10 bg-slate-50/50 rounded-[40px] border border-slate-100 flex items-center gap-8 group/item hover:bg-white hover:shadow-xl transition-all duration-500">
-                                 <div className="w-16 h-16 bg-white rounded-[24px] shadow-sm flex items-center justify-center text-blue-500 group-hover/item:rotate-12 transition-transform">
-                                    <CircleCheck size={24} />
+                              <div className="p-8 bg-slate-50/50 rounded-[32px] border border-slate-100 flex items-center gap-6 group/item hover:bg-white hover:shadow-xl transition-all duration-500">
+                                 <div className="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-blue-500 group-hover/item:rotate-12 transition-transform">
+                                    <CircleCheck size={22} />
                                  </div>
                                  <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Target Lock</p>
-                                    <p className="text-xl font-display font-black text-slate-950 uppercase italic tracking-tight">High Priority</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Target Lock</p>
+                                    <p className="text-lg font-display font-black text-slate-950 uppercase italic tracking-tight">High Priority</p>
                                  </div>
                               </div>
                            </div>
@@ -704,45 +704,45 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                                     transition={{ delay: idx * 0.1, duration: 0.5 }}
                                     whileHover={{ y: -8, scale: 1.02 }}
                                     onClick={() => setSelectedProject(project)}
-                                    className={`group p-10 rounded-[48px] border-2 ${config.bg} ${config.border} hover:shadow-2xl transition-all cursor-pointer relative overflow-hidden h-full flex flex-col group min-h-[360px]`}
+                                    className={`group p-8 rounded-[40px] border-2 ${config.bg} ${config.border} hover:shadow-2xl transition-all cursor-pointer relative overflow-hidden h-full flex flex-col group min-h-[340px]`}
                                   >
                                     <div className={`absolute top-0 right-0 w-48 h-48 ${config.accent}/10 blur-[100px] rounded-full -z-10 group-hover:scale-125 transition-transform duration-700`} />
                                     
-                                    <div className="flex justify-between items-start mb-10">
-                                      <div className="flex items-center gap-5">
-                                        <div className={`w-14 h-14 bg-white rounded-2xl flex items-center justify-center ${config.color} shadow-sm border ${config.border} group-hover:scale-110 transition-transform duration-500`}>
-                                          {config.icon}
+                                    <div className="flex justify-between items-start mb-8">
+                                      <div className="flex items-center gap-4">
+                                        <div className={`w-12 h-12 bg-white rounded-2xl flex items-center justify-center ${config.color} shadow-sm border ${config.border} group-hover:scale-110 transition-transform duration-500`}>
+                                          {React.cloneElement(config.icon, { size: 20 })}
                                         </div>
                                         <div>
-                                          <h4 className="font-display font-black text-xl text-slate-900 tracking-tighter uppercase italic leading-tight">{project.name}</h4>
-                                          <div className="flex items-center gap-2 mt-2">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${config.accent} animate-pulse`} />
-                                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{project.next_milestone || 'Module Analysis'}</p>
+                                          <h4 className="font-display font-black text-lg text-slate-900 tracking-tighter uppercase italic leading-tight">{project.name}</h4>
+                                          <div className="flex items-center gap-2 mt-1.5">
+                                            <div className={`w-1 h-1 rounded-full ${config.accent} animate-pulse`} />
+                                            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">{project.next_milestone || 'Module Analysis'}</p>
                                           </div>
                                         </div>
                                       </div>
-                                      <span className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] shadow-sm bg-white ${config.color} border ${config.border}`}>
+                                      <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] shadow-sm bg-white ${config.color} border ${config.border}`}>
                                         {project.status}
                                       </span>
                                     </div>
                                     
-                                    <p className="text-slate-500 text-sm font-medium line-clamp-2 leading-relaxed mb-10 flex-grow">
+                                    <p className="text-slate-500 text-xs font-medium line-clamp-2 leading-relaxed mb-8 flex-grow">
                                       {project.desc || 'Operational objective data encrypted or undefined for this module.'}
                                     </p>
 
-                                    <div className="space-y-4 mt-auto bg-white/50 p-6 rounded-3xl border border-white">
-                                      <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 items-center">
+                                    <div className="space-y-4 mt-auto bg-white/40 backdrop-blur-sm p-6 rounded-[28px] border border-white">
+                                      <div className="flex justify-between text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 items-center">
                                          <span className="flex items-center gap-2">
-                                           Neural Sync Flow
+                                           Neural Sync
                                          </span>
                                          <span className="text-slate-900 font-mono">{project.progress}%</span>
                                       </div>
-                                      <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
+                                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden p-[2px] border border-slate-200/30">
                                         <motion.div 
                                           initial={{ width: 0 }}
                                           animate={{ width: `${project.progress}%` }}
                                           transition={{ duration: 1, ease: "circOut" }}
-                                          className={`h-full ${config.accent} rounded-full shadow-[0_0_15px_rgba(0,0,0,0.1)]`}
+                                          className={`h-full ${config.accent} rounded-full`}
                                         />
                                       </div>
                                       <div className="flex justify-between items-center pt-2">
@@ -1229,7 +1229,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           </div>
                         </div>
                       ) : (
-                        <div className="h-[600px] flex items-center justify-center">
+                        <div className="flex-1 flex flex-col items-center justify-center min-h-[500px]">
                            <div className="text-center space-y-6 max-w-md mx-auto">
                               <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl mx-auto flex items-center justify-center border border-red-100">
                                 <Lock size={32} />
@@ -1259,45 +1259,45 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           </div>
 
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            <div className="bg-slate-950 text-white p-8 rounded-[40px] shadow-2xl relative overflow-hidden group border border-white/5">
-                              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/20 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-700" />
-                              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">Encryption</h4>
-                              <p className="text-2xl font-display font-black italic tracking-tight uppercase">At Rest</p>
-                              <p className="text-[9px] text-accent font-black uppercase tracking-widest mt-2 font-mono">AES-256-GCM</p>
+                            <div className="bg-slate-950 text-white p-6 rounded-[32px] shadow-2xl relative overflow-hidden group border border-white/5">
+                              <div className="absolute top-0 right-0 w-24 h-24 bg-accent/20 blur-[50px] rounded-full group-hover:scale-150 transition-transform duration-700" />
+                              <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-2">Encryption</h4>
+                              <p className="text-xl font-display font-black italic tracking-tight uppercase">At Rest</p>
+                              <p className="text-[8px] text-accent font-black uppercase tracking-widest mt-1 font-mono">AES-256-GCM</p>
                             </div>
-                            <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-xl flex flex-col justify-between">
-                              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Integrity</h4>
-                              <p className="text-2xl font-display font-black text-slate-950 italic tracking-tight">VERIFIED</p>
-                              <p className="text-[9px] text-emerald-500 font-black uppercase tracking-widest mt-2">{dbDocuments.length} Modules Online</p>
+                            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-lg flex flex-col justify-between">
+                              <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Integrity</h4>
+                              <p className="text-xl font-display font-black text-slate-950 italic tracking-tight">VERIFIED</p>
+                              <p className="text-[8px] text-emerald-500 font-black uppercase tracking-widest mt-1">{dbDocuments.length} Modules Online</p>
                             </div>
-                            <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-xl flex flex-col justify-between">
-                              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Protocol</h4>
-                              <p className="text-2xl font-display font-black text-slate-950 italic tracking-tight">SSL/TLS</p>
-                              <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-2">v1.3 Secure Link</p>
+                            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-lg flex flex-col justify-between">
+                              <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Protocol</h4>
+                              <p className="text-xl font-display font-black text-slate-950 italic tracking-tight">SSL/TLS</p>
+                              <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">v1.3 Secure Link</p>
                             </div>
-                            <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-xl flex flex-col justify-between">
-                              <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Access</h4>
-                              <p className="text-2xl font-display font-black text-slate-950 italic tracking-tight">PRIVATE</p>
-                              <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-2">Isolation: High</p>
+                            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-lg flex flex-col justify-between">
+                              <h4 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Access</h4>
+                              <p className="text-xl font-display font-black text-slate-950 italic tracking-tight">PRIVATE</p>
+                              <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-1">Isolation: High</p>
                             </div>
                           </div>
                           
-                          <div className="bg-white p-12 rounded-[60px] border border-slate-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12 pb-10 border-b border-slate-50">
-                              <div className="flex items-center gap-5">
-                                 <div className="w-16 h-16 bg-slate-50 rounded-[24px] flex items-center justify-center text-slate-400">
-                                    <File size={28} />
+                          <div className="bg-white p-10 rounded-[40px] border border-slate-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.03)] relative overflow-hidden">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10 pb-8 border-b border-slate-50">
+                              <div className="flex items-center gap-4">
+                                 <div className="w-14 h-14 bg-slate-50 rounded-[20px] flex items-center justify-center text-slate-400">
+                                    <File size={24} />
                                  </div>
                                  <div>
-                                   <h4 className="text-xl font-display font-black text-slate-950 tracking-tight uppercase italic">Secure Repository</h4>
-                                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Found {dbDocuments.length} modules in archive</p>
+                                   <h4 className="text-lg font-display font-black text-slate-950 tracking-tight uppercase italic">Secure Repository</h4>
+                                   <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Found {dbDocuments.length} modules in archive</p>
                                  </div>
                               </div>
                               <button 
                                 onClick={() => setShowUploadModal(true)}
-                                className="flex items-center gap-4 bg-slate-950 text-white px-10 py-5 rounded-[24px] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-accent hover:text-slate-950 transition-all shadow-xl shadow-slate-200 group active:scale-95"
+                                className="flex items-center gap-3 bg-slate-950 text-white px-8 py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-accent hover:text-slate-950 transition-all shadow-lg shadow-slate-200/50 group active:scale-95"
                               >
-                                <Upload size={18} className="group-hover:-translate-y-1 transition-transform" /> 
+                                <Upload size={16} className="group-hover:-translate-y-1 transition-transform" /> 
                                 Push Assets
                               </button>
                             </div>
@@ -1381,9 +1381,9 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           }}
                         />
                         {formErrors.name && (
-                          <p className="text-[10px] text-red-500 font-black uppercase tracking-widest ml-1 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                          <div className="text-[10px] text-red-500 font-black uppercase tracking-widest ml-1 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
                              <div className="w-1.5 h-1.5 bg-red-500 rounded-full" /> {formErrors.name}
-                          </p>
+                          </div>
                         )}
                       </div>
                       <div className="space-y-3">
@@ -1577,26 +1577,26 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
         </div>
 
             {/* Support / Quick Actions */}
-            <div className="space-y-8">
-              <div className="bg-slate-950 text-white p-8 rounded-[40px] shadow-2xl shadow-slate-200 relative overflow-hidden group">
+            <div className="space-y-6">
+              <div className="bg-slate-950 text-white p-8 rounded-[32px] shadow-2xl shadow-slate-200/20 relative overflow-hidden group">
                 <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-accent/20 rounded-full blur-[60px] group-hover:scale-150 transition-transform duration-1000" />
-                <div className="absolute top-0 right-0 p-6">
-                   <div className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center text-accent">
-                      <Clock size={20} />
+                <div className="absolute top-0 right-0 p-5">
+                   <div className="w-8 h-8 rounded-xl bg-white/5 backdrop-blur-md flex items-center justify-center text-accent">
+                      <Clock size={16} />
                    </div>
                 </div>
                 
-                <h3 className="text-2xl font-black mb-4 relative z-10 tracking-tighter">Mission <br /> Support</h3>
-                <p className="text-slate-400 text-xs font-bold leading-relaxed mb-8 relative z-10 uppercase tracking-widest">Our technical squad is on standby to assist you with any inquiries.</p>
+                <h3 className="text-xl font-black mb-3 relative z-10 tracking-tighter uppercase italic leading-none">Mission <br /> Support</h3>
+                <p className="text-slate-500 text-[9px] font-black leading-relaxed mb-6 relative z-10 uppercase tracking-widest">Our technical squad is on standby.</p>
                 
-                <button className="w-full bg-white text-slate-950 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-all relative z-10 flex items-center justify-center gap-3">
-                  <MessageSquare size={16} /> Raise Ticket
+                <button className="w-full bg-white text-slate-950 py-3.5 rounded-xl font-black text-[9px] uppercase tracking-[0.2em] hover:bg-accent transition-all relative z-10 flex items-center justify-center gap-3">
+                  <MessageSquare size={14} /> Open Uplink
                 </button>
               </div>
 
-              <div className="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100">
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Repository</h3>
+              <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100/50">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Repository</h3>
                   <button onClick={() => setActiveTab('documents')} className="text-[10px] font-black text-accent uppercase tracking-widest hover:underline">View All</button>
                 </div>
                 <div className="space-y-4">
@@ -1770,7 +1770,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                     className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-2xl outline-none text-slate-950 font-mono font-bold transition-all placeholder:text-slate-200"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        if (adminPassword === 'JK-ADMIN-2026') {
+                        if (adminPassword === 'JK-TECH-ADMIN-2026') {
                           setIsAdminAuthenticated(true);
                           setShowAdminGate(false);
                           setActiveTab('admin');
@@ -1784,7 +1784,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
 
                 <button 
                   onClick={() => {
-                    if (adminPassword === 'JK-ADMIN-2026') {
+                    if (adminPassword === 'JK-TECH-ADMIN-2026') {
                       setIsAdminAuthenticated(true);
                       setShowAdminGate(false);
                       setActiveTab('admin');
@@ -1808,15 +1808,15 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
 };
 
 const StatCard = ({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color?: string }) => (
-  <div className="bg-white p-10 rounded-[48px] shadow-[0_8px_40px_rgb(0,0,0,0.03)] border border-slate-100/50 hover:border-accent/40 hover:shadow-[0_40px_80px_rgba(0,0,0,0.07)] transition-all duration-500 group overflow-hidden relative">
-    <div className={`absolute -top-16 -right-16 w-48 h-48 ${color || 'bg-slate-50'} blur-3xl opacity-10 group-hover:opacity-30 transition-opacity duration-1000`} />
-    <div className="flex flex-col gap-10 relative z-10">
-      <div className={`w-16 h-16 ${color || 'bg-slate-50'} rounded-[24px] flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-6 shadow-sm border border-white/50`}>
-        {React.cloneElement(icon as React.ReactElement, { size: 32 })}
+  <div className="bg-white p-8 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 hover:border-accent/30 hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] transition-all duration-500 group overflow-hidden relative">
+    <div className={`absolute -top-12 -right-12 w-40 h-40 ${color || 'bg-slate-50'} blur-3xl opacity-5 group-hover:opacity-20 transition-opacity duration-1000`} />
+    <div className="flex flex-col gap-6 relative z-10">
+      <div className={`w-14 h-14 ${color || 'bg-slate-50'} rounded-2xl flex items-center justify-center transition-all group-hover:scale-110 group-hover:rotate-3 shadow-sm border border-white/50`}>
+        {React.cloneElement(icon as React.ReactElement, { size: 28 })}
       </div>
       <div>
-        <p className="text-[11px] font-display font-black uppercase tracking-[0.3em] text-slate-400 mb-3 ml-1">{label}</p>
-        <p className="text-5xl font-display font-black text-slate-950 tracking-tighter leading-none italic uppercase">{value}</p>
+        <p className="text-[10px] font-display font-black uppercase tracking-[0.2em] text-slate-400 mb-2 ml-0.5">{label}</p>
+        <p className="text-4xl font-display font-black text-slate-950 tracking-tighter leading-none italic uppercase">{value}</p>
       </div>
     </div>
   </div>
@@ -1825,20 +1825,20 @@ const StatCard = ({ icon, label, value, color }: { icon: React.ReactNode, label:
 const SidebarItem = ({ icon, label, active, onClick, className }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void, className?: string }) => (
   <button 
     onClick={onClick}
-    className={`w-full flex items-center gap-5 px-8 py-5 rounded-[24px] transition-all font-display font-extrabold text-[11px] uppercase tracking-[0.2em] group relative ${
+    className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-display font-extrabold text-[10px] uppercase tracking-[0.15em] group relative ${
       active 
-        ? 'bg-accent text-slate-950 shadow-[0_20px_40px_rgba(20,184,166,0.15)] scale-[1.03] z-10' 
+        ? 'bg-accent text-slate-950 shadow-[0_15px_30px_rgba(20,184,166,0.1)] scale-[1.02] z-10' 
         : 'text-slate-500 hover:bg-white/5 hover:text-white'
     } ${className || ''}`}
   >
-    <div className={`${active ? 'text-slate-950' : 'text-slate-500 group-hover:text-accent group-hover:scale-125'} transition-all duration-500`}>
-      {React.cloneElement(icon as React.ReactElement, { size: 20 })}
+    <div className={`${active ? 'text-slate-950' : 'text-slate-500 group-hover:text-accent group-hover:scale-110'} transition-all duration-500`}>
+      {React.cloneElement(icon as React.ReactElement, { size: 18 })}
     </div>
     <span className="relative z-10">{label}</span>
     {active && (
       <motion.div 
         layoutId="active-indicator"
-        className="ml-auto w-1.5 h-6 bg-slate-950 rounded-full" 
+        className="ml-auto w-1 h-5 bg-slate-950 rounded-full" 
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       />
     )}

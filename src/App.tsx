@@ -1288,6 +1288,7 @@ export default function App() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [prefillMessage, setPrefillMessage] = useState('');
+  const [isRecovering, setIsRecovering] = useState(false);
 
   useEffect(() => {
     // Sync Theme from LocalStorage
@@ -1340,9 +1341,13 @@ export default function App() {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
       
-      if (currentUser) {
+      if (_event === 'PASSWORD_RECOVERY') {
+        setIsRecovering(true);
+        setView('login');
+      } else if (currentUser && !isRecovering) {
         setView('dashboard');
-      } else {
+      } else if (!currentUser) {
+        setIsRecovering(false);
         // Only force back to landing if they were on the dashboard
         setView(prev => prev === 'dashboard' ? 'landing' : prev);
       }
@@ -1366,8 +1371,11 @@ export default function App() {
     );
   }
 
-  if (view === 'login' && !user) {
-    return <LoginPage onBack={() => setView('landing')} />;
+  if (view === 'login' && (!user || isRecovering)) {
+    return <LoginPage onBack={() => {
+      setIsRecovering(false);
+      setView('landing');
+    }} initialMode={isRecovering ? 'recovery' : 'login'} />;
   }
 
   if (view === 'dashboard' && user) {

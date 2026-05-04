@@ -18,10 +18,11 @@ import { supabase } from '../lib/supabase';
 
 interface LoginPageProps {
   onBack: () => void;
+  initialMode?: 'login' | 'signup' | 'forgot' | 'recovery';
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
-  const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login');
+export const LoginPage: React.FC<LoginPageProps> = ({ onBack, initialMode }) => {
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot' | 'recovery'>(initialMode || 'login');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -93,15 +94,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
       newErrors.email = 'Please enter a valid email address.';
     }
 
-    if (mode === 'login' || mode === 'signup') {
-      if (!formData.password) {
-        newErrors.password = 'Password is required.';
-      } else if (mode === 'signup' && formData.password.length < 6) {
-        newErrors.password = 'Password must be at least 6 characters.';
-      }
+    if ((mode === 'login' || mode === 'signup' || mode === 'recovery') && !formData.password) {
+      newErrors.password = 'Password is required.';
+    } else if ((mode === 'signup' || mode === 'recovery') && formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
     }
 
-    if (mode === 'signup' && formData.password !== formData.confirmPassword) {
+    if ((mode === 'signup' || mode === 'recovery') && formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match.';
     }
 
@@ -147,9 +146,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
         if (error) throw error;
         setSuccessMessage('Almost there! We\'ve sent a confirmation link to ' + formData.email + '. Please click it to activate your account.');
       } else if (mode === 'forgot') {
-        const { error } = await supabase.auth.resetPasswordForEmail(formData.email);
+        const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
+          redirectTo: `${window.location.origin}`,
+        });
         if (error) throw error;
-        setSuccessMessage('Password reset email sent! Check your inbox.');
+        setSuccessMessage('Password reset email sent! Check your inbox for the link to synchronize your access.');
+      } else if (mode === 'recovery') {
+        const { error } = await supabase.auth.updateUser({ password: formData.password });
+        if (error) throw error;
+        setSuccessMessage('Security key updated successfully! Synchronizing system access...');
+        // Auto redirect after a brief delay if needed, or let them log in
+        setTimeout(() => {
+          // If they are already logged in (which they are during recovery), they'll just see the dashboard in App.tsx
+          // But we need to signal App.tsx that recovery is done
+          window.location.reload(); // Simplest way to clear state and refresh
+        }, 2000);
       }
     } catch (error: any) {
       console.error("Auth error:", error);
@@ -280,12 +291,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
           <div className="max-w-md mx-auto w-full">
             <div className="mb-10 lg:mb-12">
               <h2 className="text-4xl font-display font-extrabold text-slate-950 tracking-tighter mb-3 uppercase">
-                {mode === 'login' ? 'Auth Required' : mode === 'signup' ? 'Create Base' : 'Secure Recovery'}
+                {mode === 'login' ? 'Auth Required' : mode === 'signup' ? 'Create Base' : mode === 'forgot' ? 'Secure Recovery' : 'Update Protocol'}
               </h2>
               <p className="text-slate-400 font-bold text-sm">
                 {mode === 'login' ? 'Enter credentials to synchronize with your dashboard.' : 
                  mode === 'signup' ? 'Begin your journey with JK Tech Cyber today.' : 
-                 "Authorization recovery link will be shared via email."}
+                 mode === 'forgot' ? "Authorization recovery link will be shared via email." :
+                 "Define your new high-encryption security key."}
               </p>
             </div>
 
@@ -319,135 +331,169 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
               )}
             </AnimatePresence>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {mode === 'signup' && (
+            <AnimatePresence mode="wait">
+              <motion.form 
+                key={mode}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                onSubmit={handleSubmit} 
+                className="space-y-6"
+              >
+                {mode === 'signup' && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Identity</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
+                        <LogIn size={18} />
+                      </div>
+                      <input 
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        type="text"
+                        placeholder="Full Name"
+                        className={`w-full pl-14 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.fullName ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'}`}
+                      />
+                    </div>
+                    {errors.fullName && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.fullName}</p>}
+                  </div>
+                )}
+
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Identity</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Terminal ID (Email)</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
-                      <LogIn size={18} />
+                      <Mail size={18} />
                     </div>
                     <input 
-                      name="fullName"
-                      value={formData.fullName}
+                      name="email"
+                      value={formData.email}
                       onChange={handleChange}
-                      type="text"
-                      placeholder="Full Name"
-                      className={`w-full pl-14 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.fullName ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'}`}
+                      type="email"
+                      placeholder="name@example.com"
+                      disabled={mode === 'recovery'}
+                      className={`w-full pl-14 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.email ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'} ${mode === 'recovery' ? 'opacity-50 cursor-not-allowed' : ''}`}
                     />
                   </div>
-                  {errors.fullName && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.fullName}</p>}
+                  {errors.email && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.email}</p>}
                 </div>
-              )}
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Terminal ID (Email)</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
-                    <Mail size={18} />
-                  </div>
-                  <input 
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    type="email"
-                    placeholder="name@example.com"
-                    className={`w-full pl-14 pr-6 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.email ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'}`}
-                  />
-                </div>
-                {errors.email && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.email}</p>}
-              </div>
-
-              {(mode === 'login' || mode === 'signup') && (
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center px-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Security Key</label>
-                    {mode === 'login' && (
+                {(mode === 'login' || mode === 'signup' || mode === 'recovery') && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center px-1">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        {mode === 'recovery' ? 'New Security Key' : 'Security Key'}
+                      </label>
+                      {mode === 'login' && (
+                        <button 
+                          type="button"
+                          onClick={() => setMode('forgot')}
+                          className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-accent-dark transition-colors"
+                        >
+                          Forgot Password?
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
+                        <Lock size={18} />
+                      </div>
+                      <input 
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        className={`w-full pl-14 pr-14 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.password ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'}`}
+                      />
                       <button 
                         type="button"
-                        onClick={() => setMode('forgot')}
-                        className="text-[10px] font-black uppercase tracking-widest text-accent hover:text-accent-dark transition-colors"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-300 hover:text-slate-500 transition-colors"
                       >
-                        Lost Key?
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
-                      <Lock size={18} />
                     </div>
-                    <input 
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
-                      className={`w-full pl-14 pr-14 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.password ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'}`}
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-300 hover:text-slate-500 transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
+                    {errors.password && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.password}</p>}
                   </div>
-                  {errors.password && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.password}</p>}
-                </div>
-              )}
-
-              {mode === 'signup' && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Security Key</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
-                      <ShieldCheck size={18} />
-                    </div>
-                    <input 
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
-                      className={`w-full px-8 py-4 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-2xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300`}
-                    />
-                  </div>
-                </div>
-              )}
-
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-slate-950 text-white py-5 rounded-2xl font-display font-extrabold text-sm uppercase tracking-widest hover:bg-slate-800 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-slate-200 group disabled:opacity-50"
-              >
-                {mode === 'login' ? (
-                  <>Sync Terminal <LogIn size={18} className="group-hover:translate-x-1 transition-transform" /></>
-                ) : mode === 'signup' ? (
-                  <>Initialize Base <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
-                ) : (
-                  <>Reset Access <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
                 )}
-              </button>
 
-              <div className="relative py-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-100"></div>
-                </div>
-                <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest">
-                  <span className="bg-white px-4 text-slate-400">Direct Gate</span>
-                </div>
-              </div>
+                {mode === 'signup' && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Security Key</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
+                        <ShieldCheck size={18} />
+                      </div>
+                      <input 
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        className={`w-full px-8 py-4 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-2xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300`}
+                      />
+                    </div>
+                  </div>
+                )}
 
-              <button 
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={isSubmitting}
-                className="w-full border-2 border-slate-100 text-slate-600 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-slate-50 active:scale-[0.98] transition-all text-sm disabled:opacity-50"
-              >
-                <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 grayscale group-hover:grayscale-0 transition-opacity" />
-                Continue with Google
-              </button>
-            </form>
+                {mode === 'recovery' && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Verify New Key</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
+                        <ShieldCheck size={18} />
+                      </div>
+                      <input 
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="••••••••"
+                        className={`w-full pl-14 pr-14 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${errors.confirmPassword ? 'border-red-200 bg-red-50/10' : 'border-transparent focus:border-accent/30 focus:bg-white'}`}
+                      />
+                    </div>
+                    {errors.confirmPassword && <p className="text-[10px] font-black text-red-500 uppercase tracking-widest ml-1">{errors.confirmPassword}</p>}
+                  </div>
+                )}
+
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-slate-950 text-white py-5 rounded-2xl font-display font-extrabold text-sm uppercase tracking-widest hover:bg-slate-800 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-slate-200 group disabled:opacity-50"
+                >
+                  {mode === 'login' ? (
+                    <>Sync Terminal <LogIn size={18} className="group-hover:translate-x-1 transition-transform" /></>
+                  ) : mode === 'signup' ? (
+                    <>Initialize Base <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+                  ) : mode === 'forgot' ? (
+                    <>Send Reset Link <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+                  ) : (
+                    <>Update Key <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+                  )}
+                </button>
+
+                <div className="relative py-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-100"></div>
+                  </div>
+                  <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest">
+                    <span className="bg-white px-4 text-slate-400">Direct Gate</span>
+                  </div>
+                </div>
+
+                <button 
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={isSubmitting}
+                  className="w-full border-2 border-slate-100 text-slate-600 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-slate-50 active:scale-[0.98] transition-all text-sm disabled:opacity-50"
+                >
+                  <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 grayscale group-hover:grayscale-0 transition-opacity" />
+                  Continue with Google
+                </button>
+              </motion.form>
+            </AnimatePresence>
 
             <div className="mt-10 text-center">
               {mode === 'login' ? (
