@@ -1259,25 +1259,41 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (session?.user) setView('dashboard');
-    });
+    // Check current session once on mount
+    let mounted = true;
+
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!mounted) return;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        setLoading(false);
+        if (currentUser) setView('dashboard');
+      })
+      .catch((err) => {
+        if (!mounted) return;
+        console.error("Supabase session error:", err);
+        setLoading(false);
+      });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
       const currentUser = session?.user ?? null;
       setUser(currentUser);
+      
       if (currentUser) {
         setView('dashboard');
       } else {
-        if (view === 'dashboard') setView('landing');
+        // Only force back to landing if they were on the dashboard
+        setView(prev => prev === 'dashboard' ? 'landing' : prev);
       }
     });
 
-    return () => subscription.unsubscribe();
-  }, [view]);
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []); // Run only once on mount
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1300,9 +1316,9 @@ export default function App() {
   }
 
   return (
-    <div className="selection:bg-primary selection:text-white border-none bg-white">
+    <div className="selection:bg-primary selection:text-white bg-white min-h-screen flex flex-col">
       <Navbar onLoginClick={() => setView(user ? 'dashboard' : 'login')} user={user} />
-      <main className="border-none">
+      <main className="flex-grow">
         <Hero />
         <About />
         <Services />

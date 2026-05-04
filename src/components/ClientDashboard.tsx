@@ -11,7 +11,12 @@ import {
   Settings,
   Bell,
   Search,
-  ExternalLink
+  ExternalLink,
+  ChevronLeft,
+  Calendar,
+  Info,
+  Plus,
+  AlertCircle
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
@@ -24,6 +29,16 @@ interface ClientDashboardProps {
 
 export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [newProject, setNewProject] = useState({
+    name: '',
+    desc: '',
+    status: 'In Progress',
+    progress: 0,
+    next_milestone: ''
+  });
 
   const [loading, setLoading] = useState(true);
   const [dbProjects, setDbProjects] = useState<any[]>([]);
@@ -76,6 +91,43 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
 
     fetchData();
   }, [user.id]);
+
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProject.name.trim()) return;
+
+    try {
+      setSubmitting(true);
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([
+          { 
+            ...newProject, 
+            user_id: user.id,
+            created_at: new Date().toISOString()
+          }
+        ])
+        .select();
+
+      if (error) throw error;
+
+      if (data) {
+        setDbProjects([data[0], ...dbProjects]);
+        setShowCreateForm(false);
+        setNewProject({
+          name: '',
+          desc: '',
+          status: 'In Progress',
+          progress: 0,
+          next_milestone: ''
+        });
+      }
+    } catch (error) {
+      console.error("Error creating project:", error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -186,56 +238,245 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
             animate={{ opacity: 1, y: 0 }}
             className="grid lg:grid-cols-3 gap-8"
           >
-            {/* Stats */}
+            {/* Main Area */}
             <div className="lg:col-span-2 space-y-8">
-              <div className="grid sm:grid-cols-3 gap-4">
-                <StatCard icon={<Clock className="text-blue-500" />} label="Active Projects" value={dbProjects.length.toString()} />
-                <StatCard icon={<CircleCheck className="text-green-500" />} label="Completed Tasks" value="0" />
-                <StatCard icon={<BarChart3 className="text-purple-500" />} label="Total Invested" value="$0" />
-              </div>
-
-              {/* Active Projects */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-bold text-slate-800">Your Active Projects</h3>
-                  <button className="text-primary text-sm font-bold hover:underline">View All</button>
+              {activeTab === 'overview' && !selectedProject && (
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <StatCard icon={<Clock className="text-blue-500" />} label="Active Projects" value={dbProjects.length.toString()} />
+                  <StatCard icon={<CircleCheck className="text-green-500" />} label="Completed Tasks" value="0" />
+                  <StatCard icon={<BarChart3 className="text-purple-500" />} label="Total Invested" value="$0" />
                 </div>
-                <div className="space-y-6">
-                  {dbProjects.length === 0 ? (
-                    <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                      <p className="text-slate-500 font-bold">No active projects yet.</p>
-                      <button className="text-primary text-sm font-bold mt-2 hover:underline">Start a Consultation</button>
+              )}
+
+              {/* Active Projects / Creation Form */}
+              {selectedProject ? (
+                // Selected Project View
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-in fade-in slide-in-from-right-4 duration-300">
+                  <button 
+                    onClick={() => setSelectedProject(null)}
+                    className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors text-sm font-bold mb-6"
+                  >
+                   <ChevronLeft size={16} /> Back to Dashboard
+                  </button>
+                  
+                  <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-8">
+                    <div>
+                      <h3 className="text-2xl font-bold text-slate-900 mb-2">{selectedProject.name}</h3>
+                      <div className="flex flex-wrap gap-4 text-sm font-bold text-slate-500">
+                        <span className="flex items-center gap-1.5">
+                          <Calendar size={14} className="text-primary" />
+                          Started: {new Date(selectedProject.created_at).toLocaleDateString()}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Info size={14} className="text-primary" />
+                          ID: #{selectedProject.id.slice(0, 8)}
+                        </span>
+                      </div>
                     </div>
-                  ) : (
-                    dbProjects.map((project) => (
-                      <div key={project.id} className="group p-6 bg-slate-50 rounded-2xl border border-transparent hover:border-primary/20 transition-all">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h4 className="font-bold text-slate-800 group-hover:text-primary transition-colors">{project.name}</h4>
-                            <p className="text-xs text-slate-500 mt-1 font-bold">Next: {project.next_milestone || 'N/A'}</p>
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${project.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-600'}`}>
-                            {project.status}
-                          </span>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-xs font-bold text-slate-500">
-                            <span>Progress</span>
-                            <span>{project.progress}%</span>
-                          </div>
-                          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${project.progress}%` }}
-                              className="h-full bg-primary"
-                            />
-                          </div>
+                    <span className={`self-start px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${selectedProject.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-600'}`}>
+                      {selectedProject.status}
+                    </span>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-8">
+                    <div className="md:col-span-2 space-y-8">
+                      <div className="space-y-4">
+                        <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                          Description
+                        </h4>
+                        <div className="p-6 bg-slate-50 rounded-2xl text-slate-600 leading-relaxed">
+                          {selectedProject.desc || 'No description provided for this project.'}
                         </div>
                       </div>
-                    ))
-                  )}
+
+                      <div className="space-y-4">
+                        <h4 className="font-bold text-slate-800">Current Progress</h4>
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm font-bold text-slate-700">
+                            <span>Development Lifecycle</span>
+                            <span>{selectedProject.progress}%</span>
+                          </div>
+                          <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 border border-slate-200">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${selectedProject.progress}%` }}
+                              className="h-full bg-primary rounded-full"
+                            />
+                          </div>
+                          <p className="text-xs text-slate-500 italic mt-2">
+                            Next Milestone: <span className="text-primary font-bold">{selectedProject.next_milestone || 'Consultation scheduled'}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="p-6 bg-slate-900 rounded-2xl text-white">
+                        <h4 className="font-bold mb-4">Project Team</h4>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-[10px] font-bold">JK</div>
+                            <div>
+                              <p className="text-xs font-bold text-white">Jared Kipkemoi</p>
+                              <p className="text-[10px] text-white/50">Lead Digital Strategist</p>
+                            </div>
+                          </div>
+                        </div>
+                        <button className="w-full mt-6 bg-white/10 hover:bg-white/20 py-2.5 rounded-xl text-xs font-bold transition-all">
+                          Contact PM
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : showCreateForm ? (
+                // Project Creation form
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                  <div className="flex justify-between items-center mb-8">
+                    <h3 className="text-xl font-bold text-slate-900">Start New Project</h3>
+                    <button 
+                      onClick={() => setShowCreateForm(false)}
+                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleCreateProject} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Project Name</label>
+                        <input 
+                          required
+                          type="text"
+                          placeholder="e.g. Website Redesign"
+                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          value={newProject.name}
+                          onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Status</label>
+                        <select 
+                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          value={newProject.status}
+                          onChange={(e) => setNewProject({...newProject, status: e.target.value})}
+                        >
+                          <option>In Progress</option>
+                          <option>Pending</option>
+                          <option>Planning</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-bold text-slate-700 ml-1">Project Description</label>
+                      <textarea 
+                        rows={4}
+                        placeholder="Describe the goals and scope of work..."
+                        className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold resize-none"
+                        value={newProject.desc}
+                        onChange={(e) => setNewProject({...newProject, desc: e.target.value})}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Initial Progress (%)</label>
+                        <input 
+                          type="number"
+                          min="0"
+                          max="100"
+                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          value={newProject.progress}
+                          onChange={(e) => setNewProject({...newProject, progress: parseInt(e.target.value) || 0})}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700 ml-1">Next Milestone</label>
+                        <input 
+                          type="text"
+                          placeholder="e.g. Design Review"
+                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          value={newProject.next_milestone}
+                          onChange={(e) => setNewProject({...newProject, next_milestone: e.target.value})}
+                        />
+                      </div>
+                    </div>
+
+                    <button 
+                      disabled={submitting}
+                      type="submit"
+                      className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100"
+                    >
+                      {submitting ? 'Creating Project...' : 'Create Project'}
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-bold text-slate-800">
+                      {activeTab === 'projects' ? 'All Projects' : 'Your Active Projects'}
+                    </h3>
+                    <div className="flex gap-2">
+                      {activeTab === 'projects' && (
+                        <button 
+                          onClick={() => setShowCreateForm(true)}
+                          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-primary/20 transition-all"
+                        >
+                          <Plus size={16} /> New Project
+                        </button>
+                      )}
+                      <button className="text-primary text-sm font-bold hover:underline">View All</button>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    {dbProjects.length === 0 ? (
+                      <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <p className="text-slate-500 font-bold">No projects found.</p>
+                        <button 
+                          onClick={() => setShowCreateForm(true)}
+                          className="text-primary text-sm font-bold mt-2 hover:underline"
+                        >
+                          Start a Project
+                        </button>
+                      </div>
+                    ) : (
+                      dbProjects.map((project) => (
+                        <div 
+                          key={project.id} 
+                          onClick={() => setSelectedProject(project)}
+                          className="group p-6 bg-slate-50 rounded-2xl border border-transparent hover:border-primary/20 transition-all cursor-pointer"
+                        >
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <h4 className="font-bold text-slate-800 group-hover:text-primary transition-colors">{project.name}</h4>
+                              <p className="text-xs text-slate-500 mt-1 font-bold">Next: {project.next_milestone || 'N/A'}</p>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${project.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 'bg-slate-200 text-slate-600'}`}>
+                              {project.status}
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-xs font-bold text-slate-500">
+                              <span>Progress</span>
+                              <span>{project.progress}%</span>
+                            </div>
+                            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${project.progress}%` }}
+                                className="h-full bg-primary"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Support / Quick Actions */}
@@ -292,7 +533,7 @@ const StatCard = ({ icon, label, value }: { icon: React.ReactNode, label: string
   </div>
 );
 
-const DocumentItem = ({ name, date }: { name: string, date: string }) => (
+const DocumentItem: React.FC<{ name: string; date: string }> = ({ name, date }) => (
   <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
     <div className="flex items-center gap-3">
       <div className="p-2 bg-slate-100 rounded-lg text-slate-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
