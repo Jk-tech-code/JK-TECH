@@ -251,7 +251,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                     onChange={handleChange}
                     type="text"
                     placeholder="Enter your name"
-                    className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
+                    className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 focus:bg-white focus:ring-8 focus:ring-accent/5 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                   />
                 </div>
               </div>
@@ -269,7 +269,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                   onChange={handleChange}
                   type="email"
                   placeholder="name@example.com"
-                  className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
+                  className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 focus:bg-white focus:ring-8 focus:ring-accent/5 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                 />
               </div>
             </div>
@@ -298,7 +298,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                     onChange={handleChange}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    className="w-full pl-14 pr-14 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
+                    className="w-full pl-14 pr-14 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 focus:bg-white focus:ring-8 focus:ring-accent/5 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                   />
                   <button 
                     type="button"

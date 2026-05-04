@@ -378,33 +378,39 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-white/70 backdrop-blur-xl border-b border-slate-100 px-8 py-6 flex justify-between items-center sticky top-0 z-30">
+        <header className="bg-white/80 backdrop-blur-xl border-b border-slate-100 px-8 py-5 flex justify-between items-center sticky top-0 z-30">
           <div className="flex items-center gap-4">
             <div className="lg:hidden p-2 rounded-xl bg-slate-100">
                <Logo size={24} />
             </div>
-            <h2 className="text-xl font-black text-slate-950 tracking-tighter uppercase tracking-[0.1em]">{activeTab}</h2>
+            <div>
+              <h2 className="text-xl font-black text-slate-950 tracking-tighter uppercase tracking-[0.1em]">{activeTab}</h2>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest hidden md:block">JK Digital Agency • System Portal</p>
+            </div>
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="relative hidden md:block">
+            <div className="relative hidden xl:block">
               <input 
                 placeholder="Search resources..."
-                className="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full text-xs font-bold outline-none ring-accent/0 focus:ring-2 focus:ring-accent/20 transition-all w-64"
+                className="pl-11 pr-4 py-3 bg-slate-50 border-transparent rounded-2xl text-xs font-bold outline-none ring-accent/0 focus:ring-2 focus:ring-accent/10 focus:bg-white focus:border-accent/20 transition-all w-64 border-2"
               />
-              <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
             </div>
 
-            <button className="relative text-slate-400 hover:text-accent transition-colors p-2">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full border-2 border-white" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button className="relative text-slate-400 hover:text-accent hover:bg-slate-50 transition-all p-3 rounded-xl group">
+                <Bell size={20} className="group-hover:rotate-12 transition-transform" />
+                <span className="absolute top-3 right-3 w-2 h-2 bg-accent rounded-full border-2 border-white ring-2 ring-accent/20" />
+              </button>
+            </div>
+            
             <div className="flex items-center gap-3 pl-6 border-l border-slate-100">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-black text-slate-950 truncate max-w-[150px] leading-tight">{profile?.full_name || user.email?.split('@')[0]}</p>
                 <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-tight">{profile?.role || 'Priority Client'}</p>
               </div>
-              <div className="w-10 h-10 bg-slate-950 text-white rounded-2xl flex items-center justify-center font-black text-sm shadow-xl shadow-slate-200">
+              <div className="w-11 h-11 bg-slate-950 text-white rounded-2xl flex items-center justify-center font-black text-sm shadow-xl shadow-slate-200 ring-4 ring-white">
                 {(profile?.full_name || user.email)?.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -431,28 +437,28 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
               {/* Active Projects / Creation Form */}
               {selectedProject ? (
                 // Selected Project View
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <div className="flex justify-between items-center mb-8">
+                <div className="bg-white p-10 md:p-14 rounded-[48px] shadow-2xl shadow-slate-200/40 border border-slate-50 animate-in fade-in slide-in-from-right-10 duration-500">
+                  <div className="flex justify-between items-center mb-12">
                     <button 
                       onClick={() => {
                         setSelectedProject(null);
                         setIsEditing(false);
                       }}
-                      className="flex items-center gap-2 text-slate-500 hover:text-primary transition-colors text-sm font-bold group"
+                      className="flex items-center gap-3 text-slate-400 hover:text-slate-950 transition-all font-black text-[10px] uppercase tracking-widest group"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                        <ChevronLeft size={16} />
+                      <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-accent group-hover:text-slate-950 transition-all">
+                        <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
                       </div>
-                      Back to Dashboard
+                      Back to Assets
                     </button>
                     
-                    <div className="flex gap-2">
+                    <div className="flex gap-4">
                        {!isEditing && (
                          <button 
                            onClick={() => setIsEditing(true)}
-                           className="flex items-center gap-2 px-4 py-2 text-primary hover:bg-primary/5 transition-all rounded-xl text-sm font-bold"
+                           className="flex items-center gap-3 px-6 py-3 bg-slate-50 hover:bg-slate-100 transition-all rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600"
                          >
-                           <Settings size={16} /> Edit Details
+                           <Settings size={14} /> Edit Module
                          </button>
                        )}
                        <button 
@@ -460,29 +466,29 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           setProjectToDelete(selectedProject);
                           setShowDeleteConfirm(true);
                         }}
-                        className="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50 transition-all rounded-xl text-sm font-bold"
+                        className="flex items-center gap-3 px-6 py-3 bg-red-50 hover:bg-red-100 transition-all rounded-2xl text-[10px] font-black uppercase tracking-widest text-red-600"
                       >
-                        <Trash2 size={16} /> Delete Project
+                        <Trash2 size={14} /> Terminate
                       </button>
                     </div>
                   </div>
                   
                   {isEditing ? (
-                    <form onSubmit={handleUpdateProject} className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                      <div className="grid md:grid-cols-2 gap-8">
-                        <div className="space-y-2">
-                          <label className="text-sm font-bold text-slate-700 ml-1">Project Name</label>
+                    <form onSubmit={handleUpdateProject} className="space-y-10 animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="grid md:grid-cols-2 gap-10">
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Project Identifier</label>
                           <input 
                             type="text"
-                            className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl outline-none transition-all font-bold ${formErrors.name ? 'border-red-500' : 'border-transparent focus:border-primary/50'}`}
+                            className={`w-full px-8 py-5 bg-slate-50 border-2 rounded-3xl outline-none transition-all font-bold text-slate-900 ${formErrors.name ? 'border-red-500 bg-red-50/20' : 'border-transparent focus:border-accent/40 focus:bg-white'}`}
                             value={selectedProject.name}
                             onChange={(e) => setSelectedProject({...selectedProject, name: e.target.value})}
                           />
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-sm font-bold text-slate-700 ml-1">Status</label>
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Operational State</label>
                           <select 
-                            className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 font-bold"
+                            className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white font-bold text-slate-900 appearance-none cursor-pointer"
                             value={selectedProject.status}
                             onChange={(e) => setSelectedProject({...selectedProject, status: e.target.value})}
                           >
@@ -493,178 +499,176 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Description</label>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Technical Summary</label>
                         <textarea 
                           rows={4}
-                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 font-bold resize-none"
+                          className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white font-bold text-slate-900 resize-none"
                           value={selectedProject.desc}
                           onChange={(e) => setSelectedProject({...selectedProject, desc: e.target.value})}
                         />
                       </div>
 
-                      <div className="grid md:grid-cols-3 gap-8">
-                        <div className="space-y-2">
-                          <label className="text-sm font-bold text-slate-700 ml-1">Progress (%)</label>
+                      <div className="grid md:grid-cols-3 gap-10">
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Efficacy Rate (%)</label>
                           <input 
                             type="number"
                             min="0"
                             max="100"
-                            className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 font-bold"
+                            className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white font-bold text-slate-900"
                             value={selectedProject.progress}
                             onChange={(e) => setSelectedProject({...selectedProject, progress: parseInt(e.target.value) || 0})}
                           />
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-sm font-bold text-slate-700 ml-1">Next Milestone</label>
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Next Objective</label>
                           <input 
                             type="text"
-                            className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 font-bold"
+                            className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white font-bold text-slate-900"
                             value={selectedProject.next_milestone}
                             onChange={(e) => setSelectedProject({...selectedProject, next_milestone: e.target.value})}
                           />
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-sm font-bold text-slate-700 ml-1">Deadline</label>
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Target Deadline</label>
                           <input 
                             type="date"
-                            className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 font-bold"
+                            className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white font-bold text-slate-900"
                             value={selectedProject.deadline}
                             onChange={(e) => setSelectedProject({...selectedProject, deadline: e.target.value})}
                           />
                         </div>
                       </div>
 
-                      <div className="flex gap-4 pt-4">
+                      <div className="flex gap-6 pt-6">
                         <button 
                           type="button"
                           onClick={() => {
                             setIsEditing(false);
                             setFormErrors({});
                           }}
-                          className="flex-1 px-6 py-4 rounded-2xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
+                          className="flex-1 px-8 py-5 rounded-[28px] font-black text-[10px] uppercase tracking-widest text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all"
                         >
-                          Cancel
+                          Abort Changes
                         </button>
                         <button 
                           disabled={submitting}
                           type="submit"
-                          className="flex-1 px-6 py-4 rounded-2xl font-bold text-white bg-primary shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+                          className="flex-1 px-8 py-5 rounded-[28px] font-black text-[10px] uppercase tracking-widest text-white bg-slate-950 shadow-2xl shadow-slate-200 hover:bg-accent hover:text-slate-950 active:scale-[0.98] transition-all disabled:opacity-50"
                         >
-                          {submitting ? 'Saving...' : 'Save Changes'}
+                          {submitting ? 'Saving Base...' : 'Commit Updates'}
                         </button>
                       </div>
                     </form>
                   ) : (
                     <>
-                      <div className="flex flex-col md:flex-row justify-between md:items-start gap-4 mb-10 pb-8 border-b border-slate-100">
+                      <div className="flex flex-col md:flex-row justify-between md:items-start gap-10 mb-12 pb-10 border-b border-slate-50 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 blur-3xl -z-10 rounded-full" />
                         <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-3xl font-bold text-slate-900">{selectedProject.name}</h3>
-                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${
-                              selectedProject.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 
-                              selectedProject.status === 'Planning' ? 'bg-purple-100 text-purple-600' :
-                              selectedProject.status === 'Pending' ? 'bg-amber-100 text-amber-600' :
-                              'bg-slate-200 text-slate-600'
+                          <div className="flex items-center gap-4 mb-4">
+                            <h3 className="text-4xl font-black text-slate-950 tracking-tighter leading-none">{selectedProject.name}</h3>
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                              selectedProject.status === 'In Progress' ? 'bg-blue-100/50 text-blue-600' : 
+                              selectedProject.status === 'Planning' ? 'bg-purple-100/50 text-purple-600' :
+                              selectedProject.status === 'Pending' ? 'bg-amber-100/50 text-amber-600' :
+                              'bg-green-100/50 text-green-600'
                             }`}>
                               {selectedProject.status}
                             </span>
                           </div>
-                          <div className="flex flex-wrap gap-4 text-sm font-bold text-slate-400">
-                            <span className="flex items-center gap-1.5">
-                              <Calendar size={14} />
-                              Launched {new Date(selectedProject.created_at).toLocaleDateString()}
+                          <div className="flex flex-wrap gap-x-8 gap-y-3 text-[10px] font-black uppercase tracking-[0.1em] text-slate-400">
+                            <span className="flex items-center gap-2">
+                              <Calendar size={14} className="text-slate-300" />
+                              Initialized: {new Date(selectedProject.created_at).toLocaleDateString()}
                             </span>
-                            <span className="flex items-center gap-1.5">
-                              <Clock size={14} />
-                              Deadline: {selectedProject.deadline ? new Date(selectedProject.deadline).toLocaleDateString() : 'No deadline set'}
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <Info size={14} />
-                              Ref: {selectedProject.id.slice(0, 8).toUpperCase()}
+                            <span className="flex items-center gap-2">
+                              <Clock size={14} className="text-slate-300" />
+                              Deadline: {selectedProject.deadline ? new Date(selectedProject.deadline).toLocaleDateString() : 'Continuous'}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="grid md:grid-cols-3 gap-8">
-                        <div className="md:col-span-2 space-y-8">
-                          <div className="space-y-4">
-                            <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                              <FileText size={18} className="text-slate-400" />
-                              Description
+                      <div className="grid lg:grid-cols-3 gap-14">
+                        <div className="lg:col-span-2 space-y-12">
+                          <div className="space-y-6">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-3">
+                              <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                              Project Core Strategy
                             </h4>
-                            <div className="p-6 bg-slate-50 rounded-2xl text-slate-600 leading-relaxed font-medium">
-                              {selectedProject.desc || 'No description provided for this project.'}
+                            <div className="p-8 bg-slate-50 rounded-[32px] text-slate-600 leading-relaxed font-bold text-sm border border-slate-100/50">
+                              {selectedProject.desc || 'No strategic overview provided for this module.'}
                             </div>
                           </div>
 
-                          <div className="space-y-4">
-                            <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                              <BarChart3 size={18} className="text-slate-400" />
-                              Current Progress
+                          <div className="space-y-8">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-3">
+                              <div className="w-1.5 h-1.5 bg-accent rounded-full" />
+                              Execution Vector
                             </h4>
-                            <div className="space-y-4">
-                              <div className="flex justify-between text-sm font-bold text-slate-700 items-end">
-                                <span className="flex flex-col">
-                                  <span className="text-slate-400 text-[10px] uppercase tracking-wider mb-1">Development Phase</span>
-                                  {selectedProject.progress}% Complete
+                            <div className="space-y-6">
+                              <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-950 items-end">
+                                <span className="flex flex-col gap-1">
+                                  <span className="text-slate-400 low-case tracking-normal">Status Report</span>
+                                  {selectedProject.progress}% Completion Rate
                                 </span>
-                                <span className="text-primary text-[10px] uppercase tracking-wider font-extrabold px-2 py-1 bg-primary/5 rounded-md">Active Tier</span>
+                                <span className="text-accent bg-slate-950 px-3 py-1 rounded-lg">Operational</span>
                               </div>
-                              <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 border border-slate-200">
+                              <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 border border-slate-200/50">
                                 <motion.div 
                                   initial={{ width: 0 }}
                                   animate={{ width: `${selectedProject.progress}%` }}
-                                  className="h-full bg-primary rounded-full shadow-sm"
+                                  className="h-full bg-slate-950 rounded-full shadow-lg shadow-slate-200"
                                 />
                               </div>
-                              <div className="flex items-center gap-4 pt-2">
-                                <div className="flex-1 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Next Milestone</p>
-                                  <p className="text-sm font-bold text-slate-900">{selectedProject.next_milestone || 'Consultation scheduled'}</p>
+                              <div className="grid sm:grid-cols-2 gap-6 pt-2">
+                                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black mb-2">Next Objective</p>
+                                  <p className="text-sm font-black text-slate-950 tracking-tight">{selectedProject.next_milestone || 'Strategic Review'}</p>
                                 </div>
-                                <div className="flex-1 p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Estimated Completion</p>
-                                  <p className="text-sm font-bold text-slate-900">Q3 2026</p>
+                                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                                  <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black mb-2">Success Metrics</p>
+                                  <p className="text-sm font-black text-slate-950 tracking-tight">Verified Tier A</p>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className="space-y-6">
-                          <div className="p-6 bg-slate-900 rounded-2xl text-white shadow-xl shadow-slate-200">
-                            <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-slate-400">Project Team</h4>
-                            <div className="space-y-4">
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">JK</div>
+                        <div className="space-y-8">
+                          <div className="p-8 bg-slate-950 rounded-[40px] text-white shadow-2xl shadow-slate-200 relative overflow-hidden group">
+                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+                            <h4 className="font-black mb-6 text-[10px] uppercase tracking-[0.2em] text-slate-500">Asset Management</h4>
+                            <div className="space-y-6">
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-accent text-sm font-black group-hover:rotate-12 transition-transform">JK</div>
                                 <div>
-                                  <p className="text-sm font-bold text-white">Jared Kipkemoi</p>
-                                  <p className="text-[10px] text-white/50 font-medium">Lead Digital Strategist</p>
+                                  <p className="text-sm font-black text-white">Jared Kipkemoi</p>
+                                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Project Director</p>
                                 </div>
                               </div>
                             </div>
-                            <div className="mt-8 pt-6 border-t border-white/5">
-                              <button className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg shadow-primary/20">
-                                Send Message
+                            <div className="mt-10 pt-8 border-t border-white/5">
+                              <button className="w-full bg-white text-slate-950 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-accent ring-accent/0 hover:ring-8 ring-accent/10">
+                                Direct Channel
                               </button>
                             </div>
                           </div>
 
-                          <div className="p-6 border-2 border-slate-100 rounded-2xl">
-                            <h4 className="font-bold mb-4 text-xs uppercase tracking-widest text-slate-400">Quick Actions</h4>
-                            <div className="space-y-3">
+                          <div className="p-8 border-2 border-slate-100 rounded-[40px] bg-white">
+                            <h4 className="font-black mb-6 text-[10px] uppercase tracking-[0.2em] text-slate-400">Quick Commands</h4>
+                            <div className="space-y-2">
                               <button 
                                 onClick={() => setShowUploadModal(true)}
-                                className="w-full text-left p-3 rounded-xl hover:bg-slate-50 transition-all group flex items-center justify-between"
+                                className="w-full text-left p-4 rounded-2xl hover:bg-slate-50 transition-all group flex items-center justify-between"
                               >
-                                <span className="text-xs font-bold text-slate-600 group-hover:text-primary">Upload Assets</span>
-                                <Upload size={14} className="text-slate-300" />
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-slate-950 transition-colors">Upload Assets</span>
+                                <Upload size={14} className="text-slate-300 group-hover:text-accent transition-colors" />
                               </button>
-                              <button className="w-full text-left p-3 rounded-xl hover:bg-slate-50 transition-all group flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-600 group-hover:text-primary">Request Revision</span>
-                                <ExternalLink size={14} className="text-slate-300" />
+                              <button className="w-full text-left p-4 rounded-2xl hover:bg-slate-50 transition-all group flex items-center justify-between">
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest group-hover:text-slate-950 transition-colors">Revision Flow</span>
+                                <ExternalLink size={14} className="text-slate-300 group-hover:text-accent transition-colors" />
                               </button>
                             </div>
                           </div>
@@ -728,25 +732,30 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                 </div>
               ) : showCreateForm ? (
                 // Project Creation form
-                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                  <div className="flex justify-between items-center mb-8">
-                    <h3 className="text-xl font-bold text-slate-900">Start New Project</h3>
+                <div className="bg-white p-10 md:p-14 rounded-[48px] shadow-2xl shadow-slate-200/40 border border-slate-50 animate-in fade-in slide-in-from-bottom-6 duration-500 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-[100px] -z-10 rounded-full" />
+                  
+                  <div className="flex justify-between items-center mb-12">
+                    <div>
+                      <h3 className="text-3xl font-black text-slate-950 tracking-tighter">Initiate Project</h3>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Fill in the technical specifications below</p>
+                    </div>
                     <button 
                       onClick={() => setShowCreateForm(false)}
-                      className="text-slate-400 hover:text-slate-600 transition-colors"
+                      className="px-6 py-3 rounded-2xl bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-950 transition-all font-black text-[10px] uppercase tracking-widest"
                     >
                       Cancel
                     </button>
                   </div>
 
-                  <form onSubmit={handleCreateProject} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Project Name</label>
+                  <form onSubmit={handleCreateProject} className="space-y-10">
+                    <div className="grid md:grid-cols-2 gap-10">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Project Identifier</label>
                         <input 
                           type="text"
-                          placeholder="e.g. Website Redesign"
-                          className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl outline-none transition-all font-bold ${formErrors.name ? 'border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
+                          placeholder="e.g. Corporate Rebrand 2026"
+                          className={`w-full px-8 py-5 bg-slate-50 border-2 rounded-3xl outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 ${formErrors.name ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-accent/40 focus:bg-white focus:ring-8 focus:ring-accent/5'}`}
                           value={newProject.name}
                           onChange={(e) => {
                             setNewProject({...newProject, name: e.target.value});
@@ -754,15 +763,15 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           }}
                         />
                         {formErrors.name && (
-                          <p className="text-xs text-red-500 font-bold ml-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
-                            <AlertCircle size={10} /> {formErrors.name}
+                          <p className="text-[10px] text-red-500 font-black uppercase tracking-widest ml-1 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                             <div className="w-1.5 h-1.5 bg-red-500 rounded-full" /> {formErrors.name}
                           </p>
                         )}
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Status</label>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Operational Status</label>
                         <select 
-                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white focus:ring-8 focus:ring-accent/5 transition-all font-bold text-slate-900 appearance-none cursor-pointer"
                           value={newProject.status}
                           onChange={(e) => setNewProject({...newProject, status: e.target.value})}
                         >
@@ -773,65 +782,82 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-700 ml-1">Project Description</label>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Strategic Description</label>
                       <textarea 
                         rows={4}
-                        placeholder="Describe the goals and scope of work..."
-                        className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold resize-none"
+                        placeholder="Define the core objectives and scope..."
+                        className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white focus:ring-8 focus:ring-accent/5 transition-all font-bold text-slate-900 resize-none placeholder:text-slate-300"
                         value={newProject.desc}
                         onChange={(e) => setNewProject({...newProject, desc: e.target.value})}
                       />
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Initial Progress (%)</label>
-                        <input 
-                          type="number"
-                          min="0"
-                          max="100"
-                          className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl outline-none transition-all font-bold ${formErrors.progress ? 'border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
-                          value={newProject.progress}
-                          onChange={(e) => {
-                            setNewProject({...newProject, progress: parseInt(e.target.value) || 0});
-                            if (formErrors.progress) setFormErrors({...formErrors, progress: ''});
-                          }}
-                        />
-                        {formErrors.progress && (
-                          <p className="text-xs text-red-500 font-bold ml-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
-                            <AlertCircle size={10} /> {formErrors.progress}
-                          </p>
-                        )}
+                    <div className="grid md:grid-cols-3 gap-8">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Initial Completion %</label>
+                        <div className="relative">
+                          <input 
+                            type="number"
+                            min="0"
+                            max="100"
+                            className={`w-full px-8 py-5 bg-slate-50 border-2 rounded-3xl outline-none transition-all font-bold text-slate-900 ${formErrors.progress ? 'border-red-500 bg-red-50/30' : 'border-transparent focus:border-accent/40 focus:bg-white focus:ring-8 focus:ring-accent/5'}`}
+                            value={newProject.progress}
+                            onChange={(e) => {
+                              setNewProject({...newProject, progress: parseInt(e.target.value) || 0});
+                              if (formErrors.progress) setFormErrors({...formErrors, progress: ''});
+                            }}
+                          />
+                          <span className="absolute right-8 top-1/2 -translate-y-1/2 text-slate-300 font-bold">%</span>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Next Milestone</label>
-                        <input 
-                          type="text"
-                          placeholder="e.g. Design Review"
-                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
-                          value={newProject.next_milestone}
-                          onChange={(e) => setNewProject({...newProject, next_milestone: e.target.value})}
-                        />
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Target Milestone</label>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            placeholder="e.g. Design Freeze"
+                            className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white focus:ring-8 focus:ring-accent/5 transition-all font-bold text-slate-900 placeholder:text-slate-300"
+                            value={newProject.next_milestone}
+                            onChange={(e) => setNewProject({...newProject, next_milestone: e.target.value})}
+                          />
+                          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300">
+                             <CircleCheck size={18} />
+                          </div>
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Project Deadline</label>
-                        <input 
-                          type="date"
-                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
-                          value={newProject.deadline}
-                          onChange={(e) => setNewProject({...newProject, deadline: e.target.value})}
-                        />
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Final Deadline</label>
+                        <div className="relative">
+                          <input 
+                            type="date"
+                            className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent rounded-3xl outline-none focus:border-accent/40 focus:bg-white focus:ring-8 focus:ring-accent/5 transition-all font-bold text-slate-900"
+                            value={newProject.deadline}
+                            onChange={(e) => setNewProject({...newProject, deadline: e.target.value})}
+                          />
+                        </div>
                       </div>
                     </div>
 
-                    <button 
-                      disabled={submitting}
-                      type="submit"
-                      className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100"
-                    >
-                      {submitting ? 'Creating Project...' : 'Create Project'}
-                    </button>
+                    <div className="pt-6">
+                      <button 
+                        disabled={submitting}
+                        type="submit"
+                        className="w-full bg-slate-950 text-white py-6 rounded-[32px] font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-slate-200 hover:bg-accent hover:text-slate-950 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-4 group"
+                      >
+                        {submitting ? (
+                          <div className="flex items-center gap-3">
+                            <div className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
+                            <span>Synthesizing...</span>
+                          </div>
+                        ) : (
+                          <>
+                            <span>Finalize Deployment</span>
+                            <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </form>
                 </div>
               ) : (
@@ -883,14 +909,19 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                         <div 
                           key={project.id} 
                           onClick={() => setSelectedProject(project)}
-                          className="group p-6 bg-slate-50 rounded-2xl border border-transparent hover:border-primary/20 transition-all cursor-pointer"
+                          className="group p-8 bg-slate-50 rounded-[32px] border border-transparent hover:border-accent/30 hover:bg-white hover:shadow-2xl hover:shadow-slate-200/50 transition-all cursor-pointer relative overflow-hidden"
                         >
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <h4 className="font-bold text-slate-800 group-hover:text-primary transition-colors">{project.name}</h4>
-                              <p className="text-xs text-slate-500 mt-1 font-bold">Next: {project.next_milestone || 'N/A'}</p>
+                          <div className="flex justify-between items-start mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-400 group-hover:text-accent transition-colors shadow-sm">
+                                <FileText size={20} />
+                              </div>
+                              <div>
+                                <h4 className="font-black text-slate-950 group-hover:text-accent transition-colors tracking-tighter uppercase tracking-[0.05em]">{project.name}</h4>
+                                <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-widest">Next Target: {project.next_milestone || 'Deployment'}</p>
+                              </div>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
                               project.status === 'In Progress' ? 'bg-blue-100 text-blue-600' : 
                               project.status === 'Planning' ? 'bg-purple-100 text-purple-600' :
                               project.status === 'Pending' ? 'bg-amber-100 text-amber-600' :
@@ -899,16 +930,16 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                               {project.status}
                             </span>
                           </div>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-xs font-bold text-slate-500">
-                              <span>Progress</span>
-                              <span>{project.progress}%</span>
+                          <div className="space-y-3">
+                            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                               <span>Completion Efficiency</span>
+                               <span className="text-slate-950">{project.progress}%</span>
                             </div>
-                            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div className="h-2 bg-slate-200/50 rounded-full overflow-hidden p-0.5">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 animate={{ width: `${project.progress}%` }}
-                                className="h-full bg-primary"
+                                className="h-full bg-slate-950 rounded-full group-hover:bg-accent transition-colors"
                               />
                             </div>
                           </div>
@@ -922,22 +953,35 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
 
             {/* Support / Quick Actions */}
             <div className="space-y-8">
-              <div className="bg-primary text-white p-8 rounded-3xl shadow-xl shadow-primary/20 relative overflow-hidden">
-                <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-[40px]" />
-                <h3 className="text-xl font-bold mb-4 relative z-10">Need Assistance?</h3>
-                <p className="text-white/80 text-sm mb-6 relative z-10">Our security team is ready to help you with any technical issues or service inquiries.</p>
-                <button className="w-full bg-white text-primary py-3 rounded-xl font-bold hover:bg-slate-50 transition-all relative z-10 flex items-center justify-center gap-2">
-                  <MessageSquare size={18} /> Open Ticket
+              <div className="bg-slate-950 text-white p-8 rounded-[40px] shadow-2xl shadow-slate-200 relative overflow-hidden group">
+                <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-accent/20 rounded-full blur-[60px] group-hover:scale-150 transition-transform duration-1000" />
+                <div className="absolute top-0 right-0 p-6">
+                   <div className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md flex items-center justify-center text-accent">
+                      <Clock size={20} />
+                   </div>
+                </div>
+                
+                <h3 className="text-2xl font-black mb-4 relative z-10 tracking-tighter">Mission <br /> Support</h3>
+                <p className="text-slate-400 text-xs font-bold leading-relaxed mb-8 relative z-10 uppercase tracking-widest">Our technical squad is on standby to assist you with any inquiries.</p>
+                
+                <button className="w-full bg-white text-slate-950 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-all relative z-10 flex items-center justify-center gap-3">
+                  <MessageSquare size={16} /> Raise Ticket
                 </button>
               </div>
 
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <h3 className="text-lg font-bold text-slate-800 mb-6">Recent Documents</h3>
+              <div className="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Repository</h3>
+                  <button onClick={() => setActiveTab('documents')} className="text-[10px] font-black text-accent uppercase tracking-widest hover:underline">View All</button>
+                </div>
                 <div className="space-y-4">
                   {dbDocuments.length === 0 ? (
-                    <p className="text-slate-500 font-bold text-sm italic">No documents available yet.</p>
+                    <div className="text-center py-10 px-4 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                       <FileText size={24} className="text-slate-200 mx-auto mb-2" />
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">No Documents</p>
+                    </div>
                   ) : (
-                    dbDocuments.map((doc) => (
+                    dbDocuments.slice(0, 4).map((doc) => (
                       <DocumentItem 
                         key={doc.id} 
                         name={doc.name} 
@@ -1083,16 +1127,21 @@ const StatCard = ({ icon, label, value, color }: { icon: React.ReactNode, label:
 const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) => (
   <button 
     onClick={onClick}
-    className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl transition-all font-black text-xs uppercase tracking-widest group ${
-      active ? 'bg-accent text-slate-950 shadow-lg shadow-accent/20' : 'text-slate-500 hover:bg-white/5 hover:text-white'
+    className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-black text-[10px] uppercase tracking-[0.2em] group relative ${
+      active 
+        ? 'bg-accent text-slate-950 shadow-xl shadow-accent/20 scale-[1.02]' 
+        : 'text-slate-500 hover:bg-white/5 hover:text-white'
     }`}
   >
-    <div className={`${active ? 'text-slate-950' : 'text-slate-500 group-hover:text-accent'} transition-colors`}>
-      {icon}
+    <div className={`${active ? 'text-slate-950' : 'text-slate-500 group-hover:text-accent group-hover:rotate-12'} transition-all duration-300`}>
+      {React.cloneElement(icon as React.ReactElement, { size: 18 })}
     </div>
     {label}
     {active && (
-      <div className="ml-auto w-1.5 h-1.5 bg-slate-950 rounded-full" />
+      <motion.div 
+        layoutId="active-indicator"
+        className="ml-auto w-1.5 h-1.5 bg-slate-950 rounded-full" 
+      />
     )}
   </button>
 );
