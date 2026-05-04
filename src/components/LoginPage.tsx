@@ -10,7 +10,8 @@ import {
   Eye,
   EyeOff,
   UserPlus,
-  LogIn
+  LogIn,
+  Chrome
 } from 'lucide-react';
 import { Logo } from './Logo';
 import { supabase } from '../lib/supabase';
@@ -31,6 +32,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleGoogleLogin = async () => {
+    setIsSubmitting(true);
+    setErrors({});
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      setErrors({ auth: error.message || 'Failed to sign in with Google.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -305,6 +325,26 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                 )}
               </button>
             </div>
+
+            {mode !== 'forgot' && (
+              <>
+                <div className="relative flex items-center py-4">
+                  <div className="flex-grow border-t border-slate-100"></div>
+                  <span className="flex-shrink mx-4 text-xs font-bold text-slate-400 uppercase tracking-widest">or</span>
+                  <div className="flex-grow border-t border-slate-100"></div>
+                </div>
+
+                <button 
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={isSubmitting}
+                  className="w-full bg-white border-2 border-slate-100 text-slate-700 py-4 px-6 rounded-2xl font-bold text-sm hover:bg-slate-50 hover:border-slate-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                >
+                  <Chrome size={18} className="text-primary" />
+                  Continue with Google
+                </button>
+              </>
+            )}
 
             {mode !== 'login' && (
               <button 
