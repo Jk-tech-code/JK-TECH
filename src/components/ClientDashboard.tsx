@@ -32,6 +32,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [newProject, setNewProject] = useState({
     name: '',
     desc: '',
@@ -94,8 +95,22 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProject.name.trim()) return;
+    
+    // Validation
+    const errors: Record<string, string> = {};
+    if (!newProject.name.trim()) {
+      errors.name = 'Project name is required';
+    }
+    if (newProject.progress < 0 || newProject.progress > 100) {
+      errors.progress = 'Progress must be between 0 and 100';
+    }
 
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    setFormErrors({});
     try {
       setSubmitting(true);
       const { data, error } = await supabase
@@ -347,13 +362,20 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700 ml-1">Project Name</label>
                         <input 
-                          required
                           type="text"
                           placeholder="e.g. Website Redesign"
-                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl outline-none transition-all font-bold ${formErrors.name ? 'border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
                           value={newProject.name}
-                          onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+                          onChange={(e) => {
+                            setNewProject({...newProject, name: e.target.value});
+                            if (formErrors.name) setFormErrors({...formErrors, name: ''});
+                          }}
                         />
+                        {formErrors.name && (
+                          <p className="text-xs text-red-500 font-bold ml-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
+                            <AlertCircle size={10} /> {formErrors.name}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700 ml-1">Status</label>
@@ -387,10 +409,18 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
                           type="number"
                           min="0"
                           max="100"
-                          className="w-full px-4 py-3 bg-slate-50 border-2 border-transparent rounded-xl outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-bold"
+                          className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl outline-none transition-all font-bold ${formErrors.progress ? 'border-red-500 focus:border-red-600 focus:ring-4 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-4 focus:ring-primary/10'}`}
                           value={newProject.progress}
-                          onChange={(e) => setNewProject({...newProject, progress: parseInt(e.target.value) || 0})}
+                          onChange={(e) => {
+                            setNewProject({...newProject, progress: parseInt(e.target.value) || 0});
+                            if (formErrors.progress) setFormErrors({...formErrors, progress: ''});
+                          }}
                         />
+                        {formErrors.progress && (
+                          <p className="text-xs text-red-500 font-bold ml-1 flex items-center gap-1 animate-in fade-in slide-in-from-top-1">
+                            <AlertCircle size={10} /> {formErrors.progress}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700 ml-1">Next Milestone</label>
