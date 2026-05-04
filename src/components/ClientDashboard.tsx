@@ -325,34 +325,34 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
         <nav className="flex-1 px-6 space-y-2 mt-4">
           <SidebarItem 
             icon={<LayoutDashboard size={18} />} 
-            label="Master Overview" 
+            label="Overview" 
             active={activeTab === 'overview'} 
             onClick={() => setActiveTab('overview')} 
           />
           <SidebarItem 
             icon={<FileText size={18} />} 
-            label="Active Projects" 
+            label="My Projects" 
             active={activeTab === 'projects'} 
             onClick={() => setActiveTab('projects')} 
           />
           <SidebarItem 
             icon={<File size={18} />} 
-            label="File Repository" 
+            label="Documents" 
             active={activeTab === 'documents'} 
             onClick={() => setActiveTab('documents')} 
           />
           <div className="pt-6 pb-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-4">Strategic</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-4">Account</span>
           </div>
           <SidebarItem 
             icon={<BarChart3 size={18} />} 
-            label="Investment & Billing" 
+            label="Billing" 
             active={activeTab === 'billing'} 
             onClick={() => setActiveTab('billing')} 
           />
           <SidebarItem 
             icon={<MessageSquare size={18} />} 
-            label="Mission Comms" 
+            label="Support" 
             active={activeTab === 'support'} 
             onClick={() => setActiveTab('support')} 
           />
@@ -361,7 +361,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
         <div className="p-8 mt-auto border-t border-white/5">
           <SidebarItem 
             icon={<Settings size={18} />} 
-            label="System Config" 
+            label="Settings" 
             active={activeTab === 'settings'} 
             onClick={() => setActiveTab('settings')} 
           />
@@ -370,7 +370,7 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
             className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold mt-2 group"
           >
             <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
-            De-authenticate
+            Logout
           </button>
         </div>
       </aside>
@@ -422,9 +422,9 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
             <div className="lg:col-span-8 space-y-8">
               {activeTab === 'overview' && !selectedProject && (
                 <div className="grid sm:grid-cols-3 gap-6">
-                  <StatCard icon={<Clock className="text-accent" />} label="Active Nodes" value={dbProjects.length.toString()} color="bg-accent/10" />
-                  <StatCard icon={<CircleCheck className="text-blue-500" />} label="Verified Milestones" value="0" color="bg-blue-500/10" />
-                  <StatCard icon={<BarChart3 className="text-slate-900" />} label="Growth Index" value="Stable" color="bg-slate-100" />
+                  <StatCard icon={<Clock className="text-accent" />} label="Active Projects" value={dbProjects.length.toString()} color="bg-accent/10" />
+                  <StatCard icon={<CircleCheck className="text-blue-500" />} label="Completed Tasks" value="0" color="bg-blue-500/10" />
+                  <StatCard icon={<BarChart3 className="text-slate-900" />} label="Project Status" value="On Track" color="bg-slate-100" />
                 </div>
               )}
 

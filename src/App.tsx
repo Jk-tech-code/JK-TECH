@@ -115,7 +115,7 @@ const Navbar = ({ onLoginClick, user }: { onLoginClick: () => void, user: Supaba
               <Logo className="text-slate-900 group-hover:rotate-[360deg] transition-transform duration-1000" size={32} />
               <div className="absolute inset-0 bg-accent/20 blur-xl rounded-full -z-10 group-hover:bg-accent/40 transition-colors" />
             </div>
-            <span className="font-bold text-xl tracking-tighter text-slate-950">JK Digital</span>
+            <span className="font-bold text-xl tracking-tighter text-slate-950">JK Digital Agency</span>
           </a>
 
           {/* Desktop Nav */}
@@ -330,7 +330,7 @@ const About = () => {
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-accent/20 rounded-full blur-3xl -z-10" />
             <div className="absolute -bottom-10 -right-10 px-8 py-6 bg-white rounded-3xl shadow-xl flex items-center gap-4 z-20 border border-slate-100">
                <div className="text-4xl font-black text-slate-950">5+</div>
-               <div className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-tight">Years of <br /> Excellence</div>
+               <div className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-tight">Years of <br /> Experience</div>
             </div>
           </motion.div>
 
@@ -341,22 +341,21 @@ const About = () => {
             className="flex flex-col gap-8"
           >
             <div>
-              <h2 className="text-accent font-black text-xs uppercase tracking-[0.3em] mb-4">The DNA</h2>
+              <h2 className="text-accent font-black text-xs uppercase tracking-[0.3em] mb-4">About Us</h2>
               <h3 className="text-5xl font-black text-slate-950 leading-tight mb-6 tracking-tighter">
-                Engineering Growth <br /> for the Future.
+                Helping You Win <br /> in the Digital World.
               </h3>
               <p className="text-lg text-slate-500 leading-relaxed font-medium">
-                JK Digital is more than an agency; we are architectural partners for your brand's digital evolution. 
-                Based in Kenya, we combine global technical standards with deep local market insights.
+                JK Digital Agency helps entrepreneurs and small businesses in Kenya navigate the web. We build professional websites, manage online portals, and grow your presence.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
               {[
-                { title: "Technical Precision", text: "Pixel-perfect engineering across all platforms." },
-                { title: "Local Insight", text: "Deep understanding of East African business." },
-                { title: "Strategic Growth", text: "Focusing on metrics that drive actual revenue." },
-                { title: "End-to-End", text: "Support from ideation to post-launch scaling." }
+                { title: "Expert Web Design", text: "Professional, fast-loading websites that get results." },
+                { title: "Local Market Knowledge", text: "We understand the needs of businesses in Kenya." },
+                { title: "Growth Focused", text: "Marketing strategies that actually bring in customers." },
+                { title: "Full IT Support", text: "We handle the tech so you can focus on your business." }
               ].map((item) => (
                 <div key={item.title} className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center text-accent mb-4">
@@ -419,13 +418,13 @@ const Services = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div className="max-w-2xl">
-            <h2 className="text-accent font-black text-xs uppercase tracking-[0.3em] mb-4">Core Ecosystem</h2>
+            <h2 className="text-accent font-black text-xs uppercase tracking-[0.3em] mb-4">What We Do</h2>
             <h3 className="text-5xl md:text-6xl font-black text-slate-950 leading-[0.85] tracking-tighter">
-              Precision Services <br /> <span className="text-slate-400">for the Digital Age.</span>
+              Digital Solutions <br /> <span className="text-slate-400">Tailored for Your Growth.</span>
             </h3>
           </div>
           <p className="text-slate-500 max-w-sm font-medium leading-relaxed">
-            We deliver high-fidelity digital solutions that bridge the gap between complex technology and local market needs.
+            We deliver high-quality digital services that help small businesses and individuals in Kenya thrive in the online world.
           </p>
         </div>
 
@@ -580,9 +579,9 @@ const Pricing = () => {
     <section id="pricing" className="py-32 bg-white noise">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Investment Matrix</h2>
-          <h3 className="text-5xl md:text-6xl font-black text-slate-950 tracking-tighter">Scalable Economy.</h3>
-          <p className="mt-4 text-slate-500 font-medium leading-relaxed">High-caliber digital engineering with transparent, value-driven tiers.</p>
+          <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Pricing Plans</h2>
+          <h3 className="text-5xl md:text-6xl font-black text-slate-950 tracking-tighter">Affordable Packages.</h3>
+          <p className="mt-4 text-slate-500 font-medium leading-relaxed">Choose a fixed-price package that fits your business needs and budget.</p>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
@@ -661,9 +660,9 @@ const Portfolio = () => {
     <section id="portfolio" className="py-32 bg-slate-950 noise text-white overflow-hidden">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Proven Trajectory</h2>
-          <h3 className="text-5xl md:text-6xl font-black mb-8 tracking-tighter">High-Fidelity Projects.</h3>
-          <p className="text-slate-400 font-medium">Selected works demonstrating our commitment to technical excellence and user-centric design.</p>
+          <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Our Work</h2>
+          <h3 className="text-5xl md:text-6xl font-black mb-8 tracking-tighter">Featured Projects.</h3>
+          <p className="text-slate-400 font-medium">Take a look at some of the recent projects we've built for our happy clients.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-10">
@@ -704,7 +703,7 @@ const Portfolio = () => {
 
         <div className="mt-20 text-center">
           <button className="px-10 py-5 bg-white text-slate-950 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-accent transition-all ring-offset-4 ring-offset-slate-950 hover:ring-2 ring-white">
-            View Full Repository
+            View All Projects
           </button>
         </div>
       </div>
@@ -803,18 +802,18 @@ const Contact = () => {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-20 items-start">
           <div>
-            <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Open Channel</h2>
-            <h3 className="text-6xl font-black mb-8 tracking-tighter leading-none">Initiate Development.</h3>
+            <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Get in Touch</h2>
+            <h3 className="text-6xl font-black mb-8 tracking-tighter leading-none">Let's Talk Business.</h3>
             <p className="text-slate-400 text-lg mb-12 font-medium max-w-md leading-relaxed">
-              Define your vision and our engineering team will provide the technical blueprint for your success.
+              Have a project in mind? Reach out to us for a free quote and consultation today.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                {[
-                 { icon: <Mail />, label: "Email Network", value: "hello@jkdigital.ke" },
-                 { icon: <Phone />, label: "Direct Comms", value: "+254 714 965 716" },
-                 { icon: <MapPin />, label: "HQ Location", value: "Kitengela, Kenya" },
-                 { icon: <Clock />, label: "Operations", value: "24/7 Digital Hub" }
+                 { icon: <Mail />, label: "Email Us", value: "hello@jkdigital.ke" },
+                 { icon: <Phone />, label: "Call Us", value: "+254 714 965 716" },
+                 { icon: <MapPin />, label: "Location", value: "Kitengela, Kenya" },
+                 { icon: <Clock />, label: "Hours", value: "24/7 Digital Desk" }
                ].map((item) => (
                  <div key={item.label} className="flex flex-col gap-3">
                    <div className="text-accent">{React.cloneElement(item.icon as React.ReactElement, { size: 18 })}</div>
@@ -838,47 +837,47 @@ const Contact = () => {
                   <div className="w-20 h-20 bg-accent/10 text-accent rounded-full flex items-center justify-center mx-auto mb-8">
                     <Check size={40} />
                   </div>
-                  <h4 className="text-3xl font-black text-slate-950 mb-4 tracking-tight">Transmission Received.</h4>
-                  <p className="text-slate-500 font-medium mb-8">Our strategists are analyzing your inquiry. Expect a response within 2 hours.</p>
+                  <h4 className="text-3xl font-black text-slate-950 mb-4 tracking-tight">Message Received!</h4>
+                  <p className="text-slate-500 font-medium mb-8">Thanks for reaching out! Our team will get back to you within 2 hours.</p>
                   <button 
                     onClick={() => setIsSubmitted(false)}
                     className="text-accent font-black text-xs uppercase tracking-widest hover:underline"
                   >
-                    Reset Connection
+                    Send Another
                   </button>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                    <div className="grid sm:grid-cols-2 gap-6">
                      <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Identity</label>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Your Name</label>
                        <input 
                          name="name"
                          value={formData.name}
                          onChange={handleChange}
-                         placeholder="Your Name"
+                         placeholder="Full Name"
                          className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-accent/30 text-slate-900 font-bold transition-all"
                        />
                      </div>
                      <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Network</label>
+                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
                        <input 
                          name="email"
                          value={formData.email}
                          onChange={handleChange}
-                         placeholder="Email Address"
+                         placeholder="Your Email"
                          className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-accent/30 text-slate-900 font-bold transition-all"
                        />
                      </div>
                    </div>
                    <div className="space-y-2">
-                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Mission Logistics</label>
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Message</label>
                      <textarea 
                         rows={5}
                         name="message"
                         value={formData.message}
                         onChange={handleChange}
-                        placeholder="Tell us about your project goals..."
+                        placeholder="How can we help you?"
                         className="w-full px-6 py-4 bg-slate-50 border-2 border-transparent rounded-2xl outline-none focus:border-accent/30 text-slate-900 font-bold transition-all resize-none"
                      />
                    </div>
@@ -887,7 +886,7 @@ const Contact = () => {
                     disabled={isSubmitting}
                     className="w-full bg-slate-950 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-accent hover:text-slate-950 transition-all shadow-xl shadow-slate-200"
                    >
-                     {isSubmitting ? "Encrypting..." : "Send Transmission"}
+                     {isSubmitting ? "Sending..." : "Send Message"}
                    </button>
                 </form>
               )}

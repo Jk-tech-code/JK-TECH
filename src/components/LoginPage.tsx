@@ -190,7 +190,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
           className="group flex items-center gap-2 text-slate-500 hover:text-slate-950 transition-colors mb-8 font-black text-[10px] uppercase tracking-[0.2em]"
         >
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          Return to Hub
+          Back to Homepage
         </button>
 
         <div className="bg-white p-10 md:p-14 rounded-[48px] shadow-2xl shadow-slate-200/50 border border-slate-100">
@@ -200,10 +200,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
               <div className="absolute inset-0 bg-accent/20 blur-2xl rounded-full -z-10" />
             </div>
             <h1 className="text-4xl font-black text-slate-950 mb-3 tracking-tighter leading-none">
-              {mode === 'login' ? 'System Access' : mode === 'signup' ? 'Node Creation' : 'Passkey Recovery'}
+              {mode === 'login' ? 'Client Portal' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
             </h1>
             <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">
-              {mode === 'login' ? 'Authentication Protocol v2.4' : mode === 'signup' ? 'Initiate New Identity' : 'Secure Credential Reset'}
+              {mode === 'login' ? 'Access your projects and support' : mode === 'signup' ? 'Join JK Digital Agency' : 'We\'ll send you a recovery link'}
             </p>
           </div>
 
@@ -240,7 +240,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {mode === 'signup' && (
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Identity Name</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
                     <UserPlus size={18} />
@@ -250,7 +250,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                     value={formData.fullName}
                     onChange={handleChange}
                     type="text"
-                    placeholder="e.g. Satoshi Nakamoto"
+                    placeholder="Enter your name"
                     className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                   />
                 </div>
@@ -258,7 +258,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
             )}
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Network Address</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
                   <Mail size={18} />
@@ -268,7 +268,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                   value={formData.email}
                   onChange={handleChange}
                   type="email"
-                  placeholder="name@domain.ke"
+                  placeholder="name@example.com"
                   className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                 />
               </div>
@@ -277,14 +277,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
             {(mode === 'login' || mode === 'signup') && (
               <div className="space-y-3">
                 <div className="flex justify-between items-center px-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Secure Passkey</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Password</label>
                   {mode === 'login' && (
                     <button 
                       type="button"
                       onClick={() => setMode('forgot')}
                       className="text-[10px] font-black text-accent uppercase tracking-widest hover:text-accent-dark transition-all"
                     >
-                      Leak Access?
+                      Forgot password?
                     </button>
                   )}
                 </div>
@@ -313,13 +313,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
 
             {mode === 'signup' && (
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Integrity</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Password</label>
                 <input 
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Repeat Password"
+                  placeholder="Confirm Password"
                   className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                 />
               </div>
@@ -338,7 +338,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                   </div>
                 ) : (
                   <>
-                    {mode === 'login' ? 'Initiate Access' : mode === 'signup' ? 'Finalize Node' : 'Command Recovery'}
+                    {mode === 'login' ? 'Login' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
                     <ArrowRight size={16} />
                   </>
                 )}
@@ -365,7 +365,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                     <div className="w-full border-t border-slate-100"></div>
                   </div>
                   <div className="relative flex justify-center text-[10px]">
-                    <span className="px-6 bg-white font-black uppercase tracking-widest text-slate-300">Third-Party Gateway</span>
+                    <span className="px-6 bg-white font-black uppercase tracking-widest text-slate-300">Or sign in with</span>
                   </div>
                 </div>
 
@@ -376,7 +376,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                   className="w-full bg-white border-2 border-slate-100 text-slate-950 py-5 px-8 rounded-3xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 hover:border-slate-200 transition-all flex items-center justify-center gap-4 group"
                 >
                   <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5 grayscale group-hover:grayscale-0 transition-opacity" />
-                  Continue with Google Network
+                  Continue with Google
                 </button>
               </>
             )}
@@ -391,7 +391,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                 }}
                 className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-accent transition-colors"
               >
-                Reverse to Master Terminal
+                Back to Login
               </button>
             )}
           </form>
@@ -400,7 +400,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
         <div className="mt-12 text-center">
           {mode === 'login' && (
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-              New entity? <button onClick={() => setMode('signup')} className="text-accent hover:underline">Request Node creation</button>
+              New user? <button onClick={() => setMode('signup')} className="text-accent hover:underline">Create an account</button>
             </p>
           )}
         </div>
