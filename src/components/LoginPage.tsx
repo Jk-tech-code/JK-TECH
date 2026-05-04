@@ -174,71 +174,75 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Decorative Background */}
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 relative overflow-hidden noise animate-in fade-in duration-700">
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 blur-[100px] rounded-full" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/10 blur-[100px] rounded-full" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-accent/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-accent/5 blur-[120px] rounded-full" />
       </div>
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-lg"
       >
         <button 
           onClick={onBack}
-          className="group flex items-center gap-2 text-slate-500 hover:text-primary transition-colors mb-8 font-bold text-sm"
+          className="group flex items-center gap-2 text-slate-500 hover:text-slate-950 transition-colors mb-8 font-black text-[10px] uppercase tracking-[0.2em]"
         >
-          <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-          Back to Homepage
+          <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+          Return to Hub
         </button>
 
-        <div className="bg-white p-8 md:p-10 rounded-[40px] shadow-2xl shadow-slate-200/50 border border-slate-100">
-          <div className="flex flex-col items-center text-center mb-10">
-            <div className="bg-primary/10 p-4 rounded-2xl mb-4">
-              <Logo size={48} className="text-primary" />
+        <div className="bg-white p-10 md:p-14 rounded-[48px] shadow-2xl shadow-slate-200/50 border border-slate-100">
+          <div className="flex flex-col items-center text-center mb-12">
+            <div className="relative mb-8">
+              <Logo size={64} className="text-slate-950" />
+              <div className="absolute inset-0 bg-accent/20 blur-2xl rounded-full -z-10" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2 tracking-tight">
-              {mode === 'login' ? 'Client Portal' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
+            <h1 className="text-4xl font-black text-slate-950 mb-3 tracking-tighter leading-none">
+              {mode === 'login' ? 'System Access' : mode === 'signup' ? 'Node Creation' : 'Passkey Recovery'}
             </h1>
-            <p className="text-slate-500 font-medium">
-              {mode === 'login' ? 'Access your projects and support' : mode === 'signup' ? 'Join JK Tech Cyber' : 'We\'ll send you a recovery link'}
+            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">
+              {mode === 'login' ? 'Authentication Protocol v2.4' : mode === 'signup' ? 'Initiate New Identity' : 'Secure Credential Reset'}
             </p>
           </div>
 
           <AnimatePresence mode="wait">
             {errors.auth && (
               <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-sm font-bold flex items-center gap-3"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="mb-8 p-5 bg-red-50 border border-red-100 text-red-600 rounded-3xl text-xs font-black uppercase tracking-widest flex items-center gap-4 leading-tight"
               >
-                <AlertCircle size={20} className="flex-shrink-0" />
+                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <AlertCircle size={16} />
+                </div>
                 {errors.auth}
               </motion.div>
             )}
 
             {successMessage && (
               <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-6 p-4 bg-green-50 border border-green-100 text-green-600 rounded-2xl text-sm font-bold flex items-center gap-3"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="mb-8 p-5 bg-green-50 border border-green-100 text-green-600 rounded-3xl text-xs font-black uppercase tracking-widest flex items-center gap-4 leading-tight"
               >
-                <ShieldCheck size={20} className="flex-shrink-0" />
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck size={16} />
+                </div>
                 {successMessage}
               </motion.div>
             )}
           </AnimatePresence>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {mode === 'signup' && (
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Full Name</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Identity Name</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
                     <UserPlus size={18} />
                   </div>
                   <input 
@@ -246,22 +250,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                     value={formData.fullName}
                     onChange={handleChange}
                     type="text"
-                    placeholder="John Doe"
-                    className={`w-full pl-11 pr-4 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all duration-200 font-bold focus:ring-4 ${errors.fullName ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-primary/10 hover:border-slate-200'}`}
+                    placeholder="e.g. Satoshi Nakamoto"
+                    className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                   />
                 </div>
-                {errors.fullName && (
-                  <p className="text-red-500 text-xs font-bold mt-2 flex items-center gap-1 ml-1 animate-in slide-in-from-top-2">
-                    <AlertCircle size={12} /> {errors.fullName}
-                  </p>
-                )}
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Network Address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
                   <Mail size={18} />
                 </div>
                 <input 
@@ -269,33 +268,28 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                   value={formData.email}
                   onChange={handleChange}
                   type="email"
-                  placeholder="name@example.com"
-                  className={`w-full pl-11 pr-4 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all duration-200 font-bold focus:ring-4 ${errors.email ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-primary/10 hover:border-slate-200'}`}
+                  placeholder="name@domain.ke"
+                  className="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                 />
               </div>
-              {errors.email && (
-                <p className="text-red-500 text-xs font-bold mt-2 flex items-center gap-1 ml-1 animate-in slide-in-from-top-2">
-                  <AlertCircle size={12} /> {errors.email}
-                </p>
-              )}
             </div>
 
             {(mode === 'login' || mode === 'signup') && (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex justify-between items-center px-1">
-                  <label className="text-sm font-bold text-slate-700">Password</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Secure Passkey</label>
                   {mode === 'login' && (
                     <button 
                       type="button"
                       onClick={() => setMode('forgot')}
-                      className="text-xs font-bold text-primary hover:underline transition-all"
+                      className="text-[10px] font-black text-accent uppercase tracking-widest hover:text-accent-dark transition-all"
                     >
-                      Forgot password?
+                      Leak Access?
                     </button>
                   )}
                 </div>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-300">
                     <Lock size={18} />
                   </div>
                   <input 
@@ -304,98 +298,85 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                     onChange={handleChange}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    className={`w-full pl-11 pr-12 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all duration-200 font-bold focus:ring-4 ${errors.password ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-primary/10 hover:border-slate-200'}`}
+                    className="w-full pl-14 pr-14 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
                   />
                   <button 
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    className="absolute inset-y-0 right-0 pr-6 flex items-center text-slate-300 hover:text-slate-600 transition-colors"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-red-500 text-xs font-bold mt-2 flex items-center gap-1 ml-1 animate-in slide-in-from-top-2">
-                    <AlertCircle size={12} /> {errors.password}
-                  </p>
-                )}
               </div>
             )}
 
             {mode === 'signup' && (
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">Confirm Password</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                    <Lock size={18} />
-                  </div>
-                  <input 
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    className={`w-full pl-11 pr-4 py-4 bg-slate-50 border-2 rounded-2xl outline-none transition-all duration-200 font-bold focus:ring-4 ${errors.confirmPassword ? 'border-red-500 focus:ring-red-500/10' : 'border-transparent focus:border-primary/50 focus:ring-primary/10 hover:border-slate-200'}`}
-                  />
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-xs font-bold mt-2 flex items-center gap-1 ml-1 animate-in slide-in-from-top-2">
-                    <AlertCircle size={12} /> {errors.confirmPassword}
-                  </p>
-                )}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Confirm Integrity</label>
+                <input 
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Repeat Password"
+                  className="w-full px-8 py-5 bg-slate-50 border-2 border-transparent focus:border-accent/30 rounded-3xl outline-none text-slate-900 font-bold transition-all placeholder:text-slate-300"
+                />
               </div>
             )}
 
-            <div className="pt-2">
+            <div className="pt-4">
               <button 
                 type="submit"
                 disabled={isSubmitting || resending}
-                className="w-full bg-primary text-white py-4 px-6 rounded-2xl font-bold text-lg hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed h-auto"
+                className="w-full bg-slate-950 text-white py-6 px-8 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-accent hover:text-slate-950 transition-all shadow-2xl shadow-slate-200 flex items-center justify-center gap-3 disabled:opacity-50"
               >
                 {isSubmitting ? (
-                  <div className="flex flex-col items-center">
-                    <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin h-auto mb-1" />
-                    <span className="text-[10px] uppercase tracking-widest opacity-80">{loadingMessages[loadingStep]}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
+                    <span>{loadingMessages[loadingStep]}</span>
                   </div>
                 ) : (
                   <>
-                    {mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Create Account' : 'Send Reset Link'}
-                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    {mode === 'login' ? 'Initiate Access' : mode === 'signup' ? 'Finalize Node' : 'Command Recovery'}
+                    <ArrowRight size={16} />
                   </>
                 )}
               </button>
             </div>
 
             {mode === 'signup' && successMessage && !isSubmitting && (
-              <div className="text-center pt-2">
-                <p className="text-xs text-slate-500 font-medium mb-2">Didn't receive the email? Check spam or:</p>
+              <div className="text-center">
                 <button 
                   type="button"
                   onClick={handleResendEmail}
                   disabled={resending}
-                  className="text-xs font-bold text-primary hover:underline transition-all disabled:opacity-50"
+                  className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-accent transition-all"
                 >
-                  {resending ? 'Resending...' : 'Resend Confirmation Email'}
+                  {resending ? 'Retransmitting...' : 'Retransmit Request Email'}
                 </button>
               </div>
             )}
 
             {mode !== 'forgot' && (
               <>
-                <div className="relative flex items-center py-4">
-                  <div className="flex-grow border-t border-slate-100"></div>
-                  <span className="flex-shrink mx-4 text-xs font-bold text-slate-400 uppercase tracking-widest">or</span>
-                  <div className="flex-grow border-t border-slate-100"></div>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-100"></div>
+                  </div>
+                  <div className="relative flex justify-center text-[10px]">
+                    <span className="px-6 bg-white font-black uppercase tracking-widest text-slate-300">Third-Party Gateway</span>
+                  </div>
                 </div>
 
                 <button 
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={isSubmitting}
-                  className="w-full bg-white border-2 border-slate-100 text-slate-700 py-4 px-6 rounded-2xl font-bold text-sm hover:bg-slate-50 hover:border-slate-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                  className="w-full bg-white border-2 border-slate-100 text-slate-950 py-5 px-8 rounded-3xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 hover:border-slate-200 transition-all flex items-center justify-center gap-4 group"
                 >
-                  <Chrome size={18} className="text-primary" />
-                  Continue with Google
+                  <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5 grayscale group-hover:grayscale-0 transition-opacity" />
+                  Continue with Google Network
                 </button>
               </>
             )}
@@ -408,18 +389,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
                   setSuccessMessage(null);
                   setErrors({});
                 }}
-                className="w-full flex items-center justify-center gap-2 text-slate-500 hover:text-primary transition-colors font-bold text-sm"
+                className="w-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-accent transition-colors"
               >
-                <LogIn size={16} /> Back to Login
+                Reverse to Master Terminal
               </button>
             )}
           </form>
         </div>
 
-        <div className="mt-8 text-center space-y-4">
+        <div className="mt-12 text-center">
           {mode === 'login' && (
-            <p className="text-slate-500 font-bold text-sm">
-              New client? <button onClick={() => setMode('signup')} className="text-primary hover:underline">Create an account</button>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+              New entity? <button onClick={() => setMode('signup')} className="text-accent hover:underline">Request Node creation</button>
             </p>
           )}
         </div>

@@ -310,81 +310,101 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Sidebar */}
-      <aside className="w-72 bg-slate-900 text-white flex flex-col hidden md:flex">
-        <div className="p-8">
-          <Logo className="text-primary" />
+      <aside className="w-80 bg-slate-950 text-white flex flex-col hidden lg:flex relative overflow-hidden noise">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 blur-3xl -z-10 rounded-full" />
+        
+        <div className="p-10">
+          <a href="/" className="flex items-center gap-3">
+            <Logo className="text-white" size={32} />
+            <span className="font-black text-xl tracking-tighter text-white">JK Digital</span>
+          </a>
         </div>
         
-        <nav className="flex-1 px-4 space-y-2">
+        <nav className="flex-1 px-6 space-y-2 mt-4">
           <SidebarItem 
-            icon={<LayoutDashboard size={20} />} 
-            label="Overview" 
+            icon={<LayoutDashboard size={18} />} 
+            label="Master Overview" 
             active={activeTab === 'overview'} 
             onClick={() => setActiveTab('overview')} 
           />
           <SidebarItem 
-            icon={<FileText size={20} />} 
-            label="Projects" 
+            icon={<FileText size={18} />} 
+            label="Active Projects" 
             active={activeTab === 'projects'} 
             onClick={() => setActiveTab('projects')} 
           />
           <SidebarItem 
-            icon={<FileText size={20} />} 
-            label="Documents" 
+            icon={<File size={18} />} 
+            label="File Repository" 
             active={activeTab === 'documents'} 
             onClick={() => setActiveTab('documents')} 
           />
+          <div className="pt-6 pb-2">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 ml-4">Strategic</span>
+          </div>
           <SidebarItem 
-            icon={<BarChart3 size={20} />} 
-            label="Billing" 
+            icon={<BarChart3 size={18} />} 
+            label="Investment & Billing" 
             active={activeTab === 'billing'} 
             onClick={() => setActiveTab('billing')} 
           />
           <SidebarItem 
-            icon={<MessageSquare size={20} />} 
-            label="Support" 
+            icon={<MessageSquare size={18} />} 
+            label="Mission Comms" 
             active={activeTab === 'support'} 
             onClick={() => setActiveTab('support')} 
           />
         </nav>
 
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-8 mt-auto border-t border-white/5">
           <SidebarItem 
-            icon={<Settings size={20} />} 
-            label="Settings" 
+            icon={<Settings size={18} />} 
+            label="System Config" 
             active={activeTab === 'settings'} 
             onClick={() => setActiveTab('settings')} 
           />
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold mt-2"
+            className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl text-slate-500 hover:bg-red-500/10 hover:text-red-400 transition-all font-bold mt-2 group"
           >
-            <LogOut size={20} /> Logout
+            <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
+            De-authenticate
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-slate-100 p-6 flex justify-between items-center sticky top-0 z-20">
+        <header className="bg-white/70 backdrop-blur-xl border-b border-slate-100 px-8 py-6 flex justify-between items-center sticky top-0 z-30">
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-bold text-slate-800 capitalize">{activeTab}</h2>
+            <div className="lg:hidden p-2 rounded-xl bg-slate-100">
+               <Logo size={24} />
+            </div>
+            <h2 className="text-xl font-black text-slate-950 tracking-tighter uppercase tracking-[0.1em]">{activeTab}</h2>
           </div>
           
           <div className="flex items-center gap-6">
-            <button className="relative text-slate-400 hover:text-primary transition-colors">
+            <div className="relative hidden md:block">
+              <input 
+                placeholder="Search resources..."
+                className="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-full text-xs font-bold outline-none ring-accent/0 focus:ring-2 focus:ring-accent/20 transition-all w-64"
+              />
+              <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            </div>
+
+            <button className="relative text-slate-400 hover:text-accent transition-colors p-2">
               <Bell size={20} />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-accent rounded-full border-2 border-white" />
             </button>
             <div className="flex items-center gap-3 pl-6 border-l border-slate-100">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-800 truncate max-w-[150px]">{profile?.full_name || user.email}</p>
-                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">{profile?.role || 'Premium Client'}</p>
+                <p className="text-sm font-black text-slate-950 truncate max-w-[150px] leading-tight">{profile?.full_name || user.email?.split('@')[0]}</p>
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest leading-tight">{profile?.role || 'Priority Client'}</p>
               </div>
-              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+              <div className="w-10 h-10 bg-slate-950 text-white rounded-2xl flex items-center justify-center font-black text-sm shadow-xl shadow-slate-200">
                 {(profile?.full_name || user.email)?.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -392,19 +412,19 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
         </header>
 
         {/* Dashboard Content */}
-        <div className="p-8">
+        <div className="p-8 overflow-y-auto">
           <motion.div 
             initial={{ opacity: 0, y: 10 }} 
             animate={{ opacity: 1, y: 0 }}
-            className="grid lg:grid-cols-3 gap-8"
+            className="grid lg:grid-cols-12 gap-8"
           >
             {/* Main Area */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-8 space-y-8">
               {activeTab === 'overview' && !selectedProject && (
-                <div className="grid sm:grid-cols-3 gap-4">
-                  <StatCard icon={<Clock className="text-blue-500" />} label="Active Projects" value={dbProjects.length.toString()} />
-                  <StatCard icon={<CircleCheck className="text-green-500" />} label="Completed Tasks" value="0" />
-                  <StatCard icon={<BarChart3 className="text-purple-500" />} label="Total Invested" value="$0" />
+                <div className="grid sm:grid-cols-3 gap-6">
+                  <StatCard icon={<Clock className="text-accent" />} label="Active Nodes" value={dbProjects.length.toString()} color="bg-accent/10" />
+                  <StatCard icon={<CircleCheck className="text-blue-500" />} label="Verified Milestones" value="0" color="bg-blue-500/10" />
+                  <StatCard icon={<BarChart3 className="text-slate-900" />} label="Growth Index" value="Stable" color="bg-slate-100" />
                 </div>
               )}
 
@@ -1045,23 +1065,36 @@ export const ClientDashboard: React.FC<ClientDashboardProps> = ({ user, onLogout
   );
 };
 
-const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
-  <button 
-    onClick={onClick}
-    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold ${active ? 'bg-primary text-white shadow-lg shadow-primary/30' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-  >
-    {icon} {label}
-  </button>
+const StatCard = ({ icon, label, value, color }: { icon: React.ReactNode, label: string, value: string, color?: string }) => (
+  <div className="bg-white p-6 rounded-[32px] shadow-sm border border-slate-100 hover:shadow-md transition-all group overflow-hidden relative">
+    <div className={`absolute top-0 right-0 w-24 h-24 ${color || 'bg-slate-50'} blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700`} />
+    <div className="flex items-center gap-4 relative z-10">
+      <div className={`w-12 h-12 ${color || 'bg-slate-50'} rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-12`}>
+        {React.cloneElement(icon as React.ReactElement, { size: 24 })}
+      </div>
+      <div>
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{label}</p>
+        <p className="text-2xl font-black text-slate-950 tracking-tighter leading-none">{value}</p>
+      </div>
+    </div>
+  </div>
 );
 
-const StatCard = ({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) => (
-  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-    <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center mb-4 border-none">
+const SidebarItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) => (
+  <button 
+    onClick={onClick}
+    className={`w-full flex items-center gap-3 px-6 py-4 rounded-2xl transition-all font-black text-xs uppercase tracking-widest group ${
+      active ? 'bg-accent text-slate-950 shadow-lg shadow-accent/20' : 'text-slate-500 hover:bg-white/5 hover:text-white'
+    }`}
+  >
+    <div className={`${active ? 'text-slate-950' : 'text-slate-500 group-hover:text-accent'} transition-colors`}>
       {icon}
     </div>
-    <p className="text-sm font-bold text-slate-500 uppercase tracking-widest leading-none mb-2">{label}</p>
-    <p className="text-2xl font-bold text-slate-800">{value}</p>
-  </div>
+    {label}
+    {active && (
+      <div className="ml-auto w-1.5 h-1.5 bg-slate-950 rounded-full" />
+    )}
+  </button>
 );
 
 const DocumentItem: React.FC<{ name: string; date: string; url?: string }> = ({ name, date, url }) => (
