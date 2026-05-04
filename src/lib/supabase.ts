@@ -29,6 +29,6 @@ export const supabase = createClient(finalUrl, finalKey, {
     detectSessionInUrl: true
   },
   global: {
-    fetch: (...args: [URL | RequestInfo, RequestInit?]) => window.fetch(...args)
+    fetch: window.fetch.bind(window)
   }
 });
