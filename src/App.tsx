@@ -101,6 +101,7 @@ const Navbar = ({ onLoginClick, user }: { onLoginClick: () => void, user: Supaba
   const navLinks = [
     { name: 'Services', href: '#services' },
     { name: 'About', href: '#about' },
+    { name: 'Team', href: '#team' },
     { name: 'Pricing', href: '#pricing' },
     { name: 'Portfolio', href: '#portfolio' },
     { name: 'Contact', href: '#contact' },
@@ -115,7 +116,7 @@ const Navbar = ({ onLoginClick, user }: { onLoginClick: () => void, user: Supaba
               <Logo className="text-slate-900 group-hover:rotate-[360deg] transition-transform duration-1000" size={32} />
               <div className="absolute inset-0 bg-accent/20 blur-xl rounded-full -z-10 group-hover:bg-accent/40 transition-colors" />
             </div>
-            <span className="font-bold text-xl tracking-tighter text-slate-950">JK Digital Agency</span>
+            <span className="font-bold text-xl tracking-tighter text-slate-950">JK Tech Cyber</span>
           </a>
 
           {/* Desktop Nav */}
@@ -218,9 +219,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-6xl md:text-8xl font-extrabold text-slate-950 mb-8 leading-[0.9] tracking-tighter"
+            className="text-6xl md:text-8xl font-display font-extrabold text-slate-950 mb-8 leading-[0.9] tracking-tighter uppercase italic"
           >
-            We Build <span className="text-accent italic font-light drop-shadow-sm">Fast</span> & Reliable <span className="text-gradient">Digital</span> Success.
+            Securing Your <br /> <span className="text-accent not-italic font-light drop-shadow-sm">Digital</span> Future.
           </motion.h1>
           
           <motion.p 
@@ -229,8 +230,7 @@ const Hero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-lg md:text-xl text-slate-500 mb-10 max-w-2xl mx-auto font-medium"
           >
-            Empowering Kenyan businesses with cutting-edge websites, 
-            strategic marketing, and seamless IT solutions since 2018.
+            JK Tech Cyber empowers Kenyan businesses with world-class websites, reliable cyber portal services, and cutting-edge IT infrastructure.
           </motion.p>
           
           <motion.div 
@@ -341,12 +341,12 @@ const About = () => {
             className="flex flex-col gap-8"
           >
             <div>
-              <h2 className="text-accent font-black text-xs uppercase tracking-[0.3em] mb-4">About Us</h2>
-              <h3 className="text-5xl font-black text-slate-950 leading-tight mb-6 tracking-tighter">
-                Helping You Win <br /> in the Digital World.
+              <h2 className="text-accent font-display font-black text-xs uppercase tracking-[0.3em] mb-4">About Us</h2>
+              <h3 className="text-5xl font-display font-black text-slate-950 leading-tight mb-6 tracking-tighter uppercase italic">
+                Pioneering <br /> Tech Evolution.
               </h3>
               <p className="text-lg text-slate-500 leading-relaxed font-medium">
-                JK Digital Agency helps entrepreneurs and small businesses in Kenya navigate the web. We build professional websites, manage online portals, and grow your presence.
+                JK Tech Cyber, led by Jared Kipkemoi, is a premier digital solutions provider in Kenya. We specialize in high-impact web design, comprehensive cyber services, and strategic digital transformations that empower local businesses to compete globally.
               </p>
             </div>
 
@@ -373,7 +373,7 @@ const About = () => {
   );
 };
 
-const Services = () => {
+const Services = ({ onSelect }: { onSelect: (name: string) => void }) => {
   const services = [
     {
       title: "Impactful Web Design",
@@ -418,9 +418,9 @@ const Services = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div className="max-w-2xl">
-            <h2 className="text-accent font-black text-xs uppercase tracking-[0.3em] mb-4">What We Do</h2>
-            <h3 className="text-5xl md:text-6xl font-black text-slate-950 leading-[0.85] tracking-tighter">
-              Digital Solutions <br /> <span className="text-slate-400">Tailored for Your Growth.</span>
+            <h2 className="text-accent font-display font-black text-xs uppercase tracking-[0.3em] mb-4">What We Do</h2>
+            <h3 className="text-5xl md:text-6xl font-display font-black text-slate-950 leading-[0.85] tracking-tighter uppercase italic">
+              Digital Solutions <br /> <span className="text-slate-400 not-italic font-light">Custom Tailored.</span>
             </h3>
           </div>
           <p className="text-slate-500 max-w-sm font-medium leading-relaxed">
@@ -454,9 +454,12 @@ const Services = () => {
               <p className="text-slate-500 group-hover:text-slate-400 transition-colors leading-relaxed mb-8">
                 {service.desc}
               </p>
-              <div className="flex items-center gap-2 font-bold text-xs text-slate-900 group-hover:text-accent transition-all">
-                Learn more <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
-              </div>
+              <button 
+                onClick={() => onSelect(service.title)}
+                className="flex items-center gap-2 font-bold text-xs text-slate-900 group-hover:text-accent transition-all cursor-pointer"
+              >
+                Get Started <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+              </button>
             </motion.div>
           ))}
         </div>
@@ -504,7 +507,7 @@ const WhyChooseUs = () => {
             </div>
             <div className="absolute -bottom-10 -right-10 bg-slate-900 text-white p-10 rounded-3xl max-w-xs h-auto border-none font-bold">
               <p className="text-2xl font-bold leading-tight mb-2 border-none">"We don't just build websites; we build business growth."</p>
-              <p className="text-primary font-semibold border-none">- JK Digital Team</p>
+              <p className="text-primary font-semibold border-none">- JK Tech Cyber Team</p>
             </div>
           </div>
         </div>
@@ -547,7 +550,7 @@ const HowItWorks = () => {
   );
 };
 
-const Pricing = () => {
+const Pricing = ({ onSelect }: { onSelect: (name: string) => void }) => {
   const plans = [
     {
       name: "Lite",
@@ -616,6 +619,7 @@ const Pricing = () => {
               </div>
               
               <button 
+                onClick={() => onSelect(`${plan.name} Plan`)}
                 className={`w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all ${plan.highlight ? 'bg-accent text-slate-950 hover:bg-white' : 'bg-slate-900 text-white hover:bg-accent hover:text-slate-950'}`}
               >
                 {plan.button}
@@ -714,15 +718,15 @@ const Portfolio = () => {
 const Testimonials = () => {
   const reviews = [
     { 
-      text: "JK Digital Marketing helped us get more customers online and improved our business visibility significantly in Kitengela.",
+      text: "JK Tech Cyber transformed our digital presence. Jared and his team are professional, highly skilled, and delivered beyond our expectations.",
       author: "Jane Kamau",
       role: "CEO, Kitengela Retail",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jane"
     },
     { 
-      text: "The team is very professional and affordable. They built our school portal in just two weeks and it works perfectly.",
+      text: "The most reliable cyber services in Kitengela. They handled our TIMS and KRA issues with zero stress. Highly recommended!",
       author: "David Mwangi",
-      role: "Director, Athi Academy",
+      role: "Operations Manager",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David"
     }
   ];
@@ -756,7 +760,59 @@ const Testimonials = () => {
   );
 };
 
-const Contact = () => {
+const Team = () => {
+  const members = [
+    {
+      name: "Jared Kipkemoi",
+      role: "Lead Engineer / Founder",
+      bio: "Visionary technologist specialized in digital infrastructure and cyber solutions.",
+      img: "https://lh3.googleusercontent.com/d/1YGkb7Id9Q9DRTwz_F82lDgvH8fLSMxgR"
+    },
+    {
+      name: "Damaris Makokha",
+      role: "Cyber Operations Lead",
+      bio: "Expert in KRA, e-Citizen portals and digital regulatory compliance.",
+      img: "https://lh3.googleusercontent.com/d/1YpFzs4PG8VJ8Y9bdPGhXWyi5HF9hi0At"
+    }
+  ];
+
+  return (
+    <section id="team" className="py-32 bg-slate-50 noise">
+      <div className="container mx-auto px-4 md:px-6 text-center">
+        <h2 className="text-accent font-black text-xs uppercase tracking-[0.4em] mb-6">Our Leadership</h2>
+        <h3 className="text-5xl md:text-6xl font-black text-slate-950 tracking-tighter mb-20 uppercase italic">The Tech Squad.</h3>
+        
+        <div className="grid md:grid-cols-2 gap-16 max-w-5xl mx-auto">
+          {members.map((member) => (
+            <motion.div 
+              key={member.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="group relative"
+            >
+              <div className="relative rounded-[60px] overflow-hidden aspect-[4/5] mb-8 border-[12px] border-white shadow-2xl">
+                <img 
+                  src={member.img} 
+                  alt={member.name}
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
+                />
+                <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors" />
+                <div className="absolute bottom-0 left-0 w-full p-10 bg-gradient-to-t from-slate-950 to-transparent text-left">
+                  <p className="text-accent font-black text-xs uppercase tracking-widest mb-2">{member.role}</p>
+                  <h4 className="text-2xl font-black text-white tracking-tighter">{member.name}</h4>
+                </div>
+              </div>
+              <p className="text-slate-500 font-medium px-6">{member.bio}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Contact = ({ prefillMessage }: { prefillMessage?: string }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -764,6 +820,13 @@ const Contact = () => {
     service: 'Website Design',
     message: ''
   });
+
+  useEffect(() => {
+    if (prefillMessage) {
+      setFormData(prev => ({ ...prev, message: prefillMessage }));
+    }
+  }, [prefillMessage]);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -1022,7 +1085,7 @@ const Footer = () => {
         </div>
         
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-slate-200 text-slate-500 text-sm border-none font-bold">
-          <p>© 2026 JK Digital Marketing. All rights reserved.</p>
+          <p>© 2026 JK Tech Cyber. All rights reserved.</p>
           <div className="flex gap-8 mt-4 md:mt-0 border-none font-bold">
             <a href="#" className="hover:text-primary border-none">Privacy Policy</a>
             <a href="#" className="hover:text-primary border-none">Terms of Service</a>
@@ -1062,65 +1125,65 @@ const ClientPortal = ({ onLoginClick, user }: { onLoginClick: () => void, user: 
               <div className="inline-flex items-center gap-2 bg-primary/20 text-primary border border-primary/20 px-4 py-2 rounded-full text-sm font-bold mb-6 h-auto">
                 <User size={16} /> Exclusive for JK Tech Clients
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white leading-tight border-none">Your Dedicated Project Portal</h2>
-              <p className="text-lg text-slate-400 mb-10 leading-relaxed border-none">
+              <h2 className="text-4xl md:text-5xl font-display font-black mb-6 text-white leading-tight">Your Dedicated Project Portal</h2>
+              <p className="text-lg text-slate-400 mb-10 leading-relaxed">
                 We believe in total transparency. Our Client Portal allows you to manage your relationship with us in one place—from tracking design progress to managing your cyber service applications.
               </p>
-              <div className="space-y-6 border-none">
+              <div className="space-y-6">
                 {portalFeatures.map((feature) => (
-                  <div key={feature.title} className="flex gap-4 border-none">
-                    <div className="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border-none">
+                  <div key={feature.title} className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center">
                       {feature.icon}
                     </div>
-                    <div className="border-none">
-                      <h4 className="text-lg font-bold text-white mb-1 border-none">{feature.title}</h4>
-                      <p className="text-sm text-slate-500 border-none">{feature.desc}</p>
+                    <div>
+                      <h4 className="text-lg font-display font-bold text-white mb-1">{feature.title}</h4>
+                      <p className="text-sm text-slate-500">{feature.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-12 flex flex-col sm:flex-row gap-4 border-none font-bold">
+              <div className="mt-12 flex flex-col sm:flex-row gap-4">
                 <button 
                   onClick={onLoginClick}
-                  className="bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-primary-dark transition-all text-center border-none shadow-[0_0_20px_rgba(14,165,233,0.3)]"
+                  className="bg-accent text-slate-950 px-8 py-4 rounded-xl font-display font-bold text-lg hover:bg-white transition-all shadow-[0_0_20px_rgba(20,184,166,0.2)]"
                 >
                   {user ? 'Go to Dashboard' : 'Login to Portal'}
                 </button>
                 <a 
                   href="#contact" 
-                  className="bg-white/10 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all text-center border-none"
+                  className="bg-white/10 text-white px-8 py-4 rounded-xl font-display font-bold text-lg hover:bg-white/20 transition-all text-center"
                 >
                   Learn More
                 </a>
               </div>
             </div>
-            <div className="relative border-none h-auto lg:block hidden">
-              <div className="bg-gradient-to-br from-primary/20 to-transparent absolute -inset-10 blur-3xl -z-10 rounded-full h-auto border-none" />
-              <div className="bg-slate-900 p-4 rounded-3xl border border-slate-700 shadow-2xl h-auto border-none">
-                <div className="bg-slate-800 rounded-2xl p-6 border-none h-auto">
-                  <div className="flex justify-between items-center mb-8 border-none font-bold">
-                    <div className="flex gap-2 border-none">
-                      <div className="w-3 h-3 rounded-full bg-red-400 h-auto border-none" />
-                      <div className="w-3 h-3 rounded-full bg-yellow-400 h-auto border-none" />
-                      <div className="w-3 h-3 rounded-full bg-green-400 h-auto border-none" />
+            <div className="relative h-auto lg:block hidden">
+              <div className="bg-gradient-to-br from-accent/20 to-transparent absolute -inset-10 blur-3xl -z-10 rounded-full h-auto" />
+              <div className="bg-slate-900 p-4 rounded-3xl border border-slate-700 shadow-2xl h-auto">
+                <div className="bg-slate-800 rounded-2xl p-6 h-auto">
+                  <div className="flex justify-between items-center mb-8">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-400 h-auto" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-400 h-auto" />
+                      <div className="w-3 h-3 rounded-full bg-green-400 h-auto" />
                     </div>
-                    <div className="w-32 h-2 bg-slate-700 rounded-full h-auto border-none" />
+                    <div className="w-32 h-2 bg-slate-700 rounded-full h-auto" />
                   </div>
-                  <div className="space-y-4 border-none font-bold">
-                    <div className="h-8 bg-slate-700 rounded-lg w-3/4 animate-pulse border-none" />
-                    <div className="grid grid-cols-2 gap-4 border-none">
-                      <div className="h-24 bg-slate-700/50 rounded-xl border border-slate-700 border-none" />
-                      <div className="h-24 bg-slate-700/50 rounded-xl border border-slate-700 border-none" />
+                  <div className="space-y-4">
+                    <div className="h-8 bg-slate-700 rounded-lg w-3/4 animate-pulse" />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="h-24 bg-slate-700/50 rounded-xl border border-slate-700" />
+                      <div className="h-24 bg-slate-700/50 rounded-xl border border-slate-700" />
                     </div>
-                    <div className="h-32 bg-slate-700/50 rounded-xl border border-slate-700 border-none" />
-                    <div className="flex justify-end border-none">
-                      <div className="h-10 bg-primary/40 rounded-lg w-24 border-none" />
+                    <div className="h-32 bg-slate-700/50 rounded-xl border border-slate-700" />
+                    <div className="flex justify-end">
+                      <div className="h-10 bg-accent/40 rounded-lg w-24" />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-8 -right-8 bg-primary p-6 rounded-2xl shadow-xl border-none">
-                <CheckCircle2 size={32} className="text-white" />
+              <div className="absolute -bottom-8 -right-8 bg-accent p-6 rounded-2xl shadow-xl">
+                <CheckCircle2 size={32} className="text-slate-950" />
               </div>
             </div>
           </div>
@@ -1144,7 +1207,7 @@ const WhatsAppButton = () => {
   );
 };
 
-const CyberPortals = () => {
+const CyberPortals = ({ onSelect }: { onSelect: (name: string) => void }) => {
   const portalServices = [
     {
       title: "KRA Tax Services",
@@ -1182,18 +1245,26 @@ const CyberPortals = () => {
             </p>
             <div className="grid sm:grid-cols-2 gap-6 border-none">
               {portalServices.map((portal) => (
-                <div key={portal.title} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 border-none">
-                  <div className="mb-4 h-auto border-none">{portal.icon}</div>
-                  <h4 className="text-xl font-bold text-slate-900 mb-2 border-none">{portal.title}</h4>
-                  <p className="text-sm text-slate-500 mb-4 border-none">{portal.desc}</p>
-                  <ul className="space-y-2 border-none">
-                    {portal.items.map((item) => (
-                      <li key={item} className="flex items-center gap-2 text-sm text-slate-700 border-none">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full border-none" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                <div key={portal.title} className="p-8 bg-slate-50 rounded-[32px] border border-slate-100 flex flex-col justify-between">
+                  <div>
+                    <div className="mb-6 h-auto border-none">{portal.icon}</div>
+                    <h4 className="text-xl font-bold text-slate-900 mb-2 border-none">{portal.title}</h4>
+                    <p className="text-sm text-slate-500 mb-6 border-none leading-relaxed">{portal.desc}</p>
+                    <ul className="space-y-3 mb-8">
+                      {portal.items.map((item) => (
+                        <li key={item} className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                          <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <button 
+                    onClick={() => onSelect(portal.title)}
+                    className="w-full py-4 bg-white border border-slate-200 rounded-2xl text-slate-950 font-black text-[10px] uppercase tracking-widest hover:bg-slate-950 hover:text-white transition-all shadow-sm"
+                  >
+                    Launch Request
+                  </button>
                 </div>
               ))}
             </div>
@@ -1216,6 +1287,35 @@ export default function App() {
   const [view, setView] = useState<'landing' | 'login' | 'dashboard'>('landing');
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [prefillMessage, setPrefillMessage] = useState('');
+
+  useEffect(() => {
+    // Sync Theme from LocalStorage
+    const savedColor = localStorage.getItem('jk-accent-color');
+    const savedFont = localStorage.getItem('jk-font-family');
+    
+    if (savedColor) {
+      document.documentElement.style.setProperty('--accent-color', savedColor);
+      const darkColor = savedColor === '#00e5ff' ? '#00b8d4' : 
+                       savedColor === '#a855f7' ? '#7e22ce' :
+                       savedColor === '#22c55e' ? '#15803d' :
+                       savedColor === '#ec4899' ? '#be185d' :
+                       savedColor === '#f97316' ? '#c2410c' : '#00b8d4';
+      document.documentElement.style.setProperty('--accent-color-dark', darkColor);
+    }
+    
+    if (savedFont) {
+      document.documentElement.style.setProperty('--font-display-var', `"${savedFont}", sans-serif`);
+    }
+  }, []);
+
+  const handleSelect = (name: string) => {
+    setPrefillMessage(`Hello JK Tech Cyber! I'm interested in the ${name}. Could you provide more information about the next steps?`);
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     // Check current session once on mount
@@ -1280,16 +1380,17 @@ export default function App() {
       <main className="flex-grow">
         <Hero />
         <About />
-        <Services />
-        <CyberPortals />
+        <Services onSelect={handleSelect} />
+        <CyberPortals onSelect={handleSelect} />
         <WhyChooseUs />
         <HowItWorks />
-        <Pricing />
+        <Pricing onSelect={handleSelect} />
         <Portfolio />
         <ClientPortal onLoginClick={() => setView(user ? 'dashboard' : 'login')} user={user} />
         <Testimonials />
+        <Team />
         <BlogTeaser />
-        <Contact />
+        <Contact prefillMessage={prefillMessage} />
       </main>
       <Footer />
       <WhatsAppButton />
